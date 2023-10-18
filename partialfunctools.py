@@ -1,12 +1,18 @@
-from functools import partial
-# original function
-def power(exponent, base):
-    return base ** exponent
-#Partial function   
-square = partial(power, 2) # setting value of exponent to 2
-cube = partial(power, 3) # setting value of exponent to 3
-# Calling Partial function
-print("The square of 5 is", square(5))
-print("The cube of 7 is", cube(7))
+import autograd.numpy as np   # Thinly-wrapped version of Numpy
+from autograd import grad
 
-print(int("101",base=10))
+def taylor_sine(x):  # Taylor approximation to sine function
+    ans = currterm = x
+    i = 0
+    while np.abs(currterm) > 0.001:
+        currterm = -currterm * x**2 / ((2 * i + 3) * (2 * i + 2))
+        ans = ans + currterm
+        i += 1
+    return ans
+
+grad_sine = grad(taylor_sine)
+print ("Gradient of sin(pi) is", grad_sine(3.14))
+
+x = np.array([0,0,0])
+xd = x - 2
+print(xd)
