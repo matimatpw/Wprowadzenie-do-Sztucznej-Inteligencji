@@ -9,7 +9,7 @@ from functools import partial
 #
 
 class optim_result_t:
-    def __init__(self, x_table: [], Beta :float, times: [], iteration_info: int, stop_info: bool) -> None:
+    def __init__(self, x_table, Beta :float, times: [], iteration_info: int, stop_info: bool) -> None:
         self.learn_rate_info = Beta
         self.time = times
         self.x_history = x_table
@@ -18,7 +18,7 @@ class optim_result_t:
         self.stop_info = stop_info
 
     def __str__(self) -> str:
-        body = f"Learn_rate > {self.learn_rate_info}\nx >{self.x_history[-1]}\n"
+        body = f"Learn_rate-> {self.learn_rate_info}\nx-> {self.x_history}\n"
         if(self.stop_info):
             return f"{body}Function reached max_iteration_limit and exited!\t"
         return f"{body}Function >fullfilled< stop_condition and exited on iteration > {self.iteration_number} <!\t"
@@ -38,7 +38,7 @@ def target_func(x):
 def sphere(x: []):
     return np.sum(x**2)
 
-def solver (func, x0: [], params: optim_params) -> optim_result_t: # slownik z tymi parametrami
+def solver (func, x0, params: optim_params) -> optim_result_t: # slownik z tymi parametrami
     best = []
     gradient = grad(func)
     x = x0
@@ -46,10 +46,10 @@ def solver (func, x0: [], params: optim_params) -> optim_result_t: # slownik z t
     stop_info = True
     for _ in range(params.max_iter):
 
-        new_x = x - (learn_rate * gradient(x[0])) # aktualizacja //zmniejszenie wartosci funkcji celu i zblizanie sie do minimum
+        new_x = x - (learn_rate * gradient(x)) # aktualizacja //zmniejszenie wartosci funkcji celu i zblizanie sie do minimum
                                     #tutaj gradient dziala tylko od skalarnej wartosci a nie od wektra
-        previous_grad = gradient(x[0])
-        previous_func_val = func(x[0])
+        previous_grad = gradient(x)
+        previous_func_val = func(x)
 
         x = new_x
 
@@ -82,4 +82,4 @@ my_toll = 0.0001           # 3 stopper ( Elipse value )
 
 
 parameters = optim_params(my_alfa, my_max_iter,my_toll)
-print(solver(target_func,np.array([0.,0.]), parameters))
+print(solver(target_func,3., parameters))
