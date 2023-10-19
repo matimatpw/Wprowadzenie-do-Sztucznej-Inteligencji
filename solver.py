@@ -25,15 +25,6 @@ def solver (func, x0: [], params=learning_rates, max_iter=1000, toll=0.0001): # 
     for learn_rate in params:
         x = x0
 
-        # for _ in range(max_iter):
-        #     x = x - (learn_rate * gradient(x)) # aktualizacja kroku
-
-        #     gradient_magnitude = np.abs(gradient(x))
-
-        #     if(gradient_magnitude < stopper):
-        #         print(f"param: {learn_rate} - very close to 0->   \t")
-        #         break
-
         for _ in range(max_iter):
             previous_grad = gradient(x)
             previous_func_val = func(x)
