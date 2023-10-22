@@ -20,8 +20,8 @@ class optim_result_t:
     def __str__(self) -> str:
         body = f"Learn_rate-> {self.learn_rate_info}\nx-> {self.x_history}\n"
         if(self.stop_info):
-            return f"{body}Function reached max_iteration_limit and exited!\t"
-        return f"{body}Function >fullfilled< stop_condition and exited on iteration > {self.iteration_number} <!\t"
+            return f"{body}Function reached max_iteration_limit and exited!"
+        return f"{body}Function >fullfilled< stop_condition and exited on iteration > {self.iteration_number} <"
 
 
 class optim_params:
@@ -35,10 +35,25 @@ def target_func(x):
 
 
 
+def objective_function(x, alpha=1):
+    # x is a vector of length 10
+    # alpha is a scalar
+    # returns a scalar
+    n = np.size(x) # -> 10
+    x_squared = np.square(x) # squared every element in array
+    indexes = np.arange(1, n + 1)
+    alpha_values = alpha ** (indexes - 1 / (n - 1))
+    values = x_squared * alpha_values
+    result = np.sum(values)
+    return result
+
+
+
+
 def sphere(x: []):
     return np.sum(x**2)
 
-def solver (func, x0, params: optim_params) -> optim_result_t: # slownik z tymi parametrami
+def solver (func, x0: np.array, params: optim_params) -> optim_result_t: # slownik z tymi parametrami
     best = []
     gradient = grad(func)
     x = x0
@@ -58,8 +73,8 @@ def solver (func, x0, params: optim_params) -> optim_result_t: # slownik z tymi 
         # if(new_x==0.0):
         #     print(f"X TO 0 -> iteracja: {_}")
         #     break
-
-        if(abs(previous_grad - gradient(new_x)) < params.toll and abs(previous_func_val - func(new_x)) < params.toll):
+        # abs(previous_grad - gradient(new_x)) < params.toll
+        if( abs(previous_func_val - func(new_x)) < params.toll):
             iter_info = _
             stop_info = False
             break
@@ -74,7 +89,7 @@ def solver (func, x0, params: optim_params) -> optim_result_t: # slownik z tymi 
     return my_result
 
 
-
+# --SECTION TO CHOSE VARIABLES-- #
 alfas_to_test = np.array([0.1,0.01,0.001])
 my_alfa = alfas_to_test[0] # learning_rate
 my_max_iter = 1000         # iteration limit
@@ -82,4 +97,10 @@ my_toll = 0.0001           # 3 stopper ( Elipse value )
 
 
 parameters = optim_params(my_alfa, my_max_iter,my_toll)
-print(solver(target_func,3., parameters))
+# print(solver(objective_function,np.array([3.,3.]), parameters))
+indexes = np.arange(0, 5,  dtype=int)
+
+print(np.size(indexes))
+print(indexes[1])
+
+print(indexes)
