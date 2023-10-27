@@ -124,10 +124,10 @@ objective_function_alfa = partial(objective_function, alpha=10)
 def main():
     # --SECTION TO CHOSE VARIABLES-- #
     betas_to_test = np.array([0.1,0.01,0.001])
-    my_beta = betas_to_test[0] # learning_rate
+    my_beta = betas_to_test[2] # learning_rate
     my_max_iter = 1000         # iteration limit
     my_toll = 0.0001           # stopper ( Elipse value )
-    array = np.array([1.,2.,1.])
+    array = np.array([100.,100.,100.])
 
     parameters = optim_params(my_beta, my_max_iter,my_toll)
     output =  solver(objective_function_alfa,array, parameters)
