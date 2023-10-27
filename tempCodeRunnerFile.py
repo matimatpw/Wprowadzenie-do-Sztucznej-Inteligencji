@@ -1,2 +1,2 @@
-class optim_result_t:
-#     ...
+
+    # graph(result_3,alhpa=10)

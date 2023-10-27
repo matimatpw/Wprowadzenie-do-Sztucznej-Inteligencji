@@ -13,7 +13,7 @@ import time
 class optim_result:
     def __init__(self, beta :float) -> None:
         self.learn_rate_info = beta # PARAMETR KROKU
-        
+
         self.iter_history = []
         self.func_value_history = []
 
@@ -39,7 +39,7 @@ class optim_result:
     @property
     def get_beta(self):
         return self.learn_rate_info
-    
+
     def __str__(self) -> str:
         body = f"Learn_rate-> {self.learn_rate_info}\n"
         if(self.stop_info):
@@ -57,7 +57,7 @@ class optim_params:
 #########################################################################
 
 def objective_function(x, alpha):
-    
+
     # x is a vector of length 10
     # alpha is a scalar
     # returns a scalar
@@ -86,37 +86,38 @@ def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik
     print(f"TO JEST pierwsza F(x) -> {func(x0)}\n")
 
     for _ in range(params.max_iter):
-         
+
         previous_func_val = func(x0)
-        print(previous_func_val)
+        # print(previous_func_val)
 
         my_result.add_iter(_)
         my_result.add_func_value(previous_func_val)
 
-        
+
         new_x = x0 - (learn_rate * gradient(x0)) # aktualizacja //zmniejszenie wartosci funkcji celu i zblizanie sie do minimum
 
         x0 = new_x # aktualizacja x
 
         if(_ == 999):
             pass
-
+            #if condition to check :
         if( abs(previous_func_val - func(new_x)) < params.toll or np.linalg.norm(gradient(new_x)) < params.toll):
-            
+
             print(f"TO JEST OSTATNI X -> {new_x}\n")
             print(f"TO JEST OSTATNIa F(x) -> {func(new_x)}\n")
+            print(f"TO JEST previous F(x) -> {previous_func_val}\n")
             print(f"TO JEST  abs -> {abs(previous_func_val - func(new_x))}\n")
             print(f"LINEARLG NORM -> {np.linalg.norm(gradient(new_x))}\n")
 
             iter_info = _
             stop_info = False
             break
-    
-    
+
+
 
     my_result.iteration_stop = iter_info
     my_result.stop_info = stop_info
-    
+
     return my_result
 
 objective_function_alfa = partial(objective_function, alpha=10)
@@ -127,7 +128,8 @@ def main():
     my_beta = betas_to_test[2] # learning_rate
     my_max_iter = 1000         # iteration limit
     my_toll = 0.0001           # stopper ( Elipse value )
-    array = np.array([100.,100.,100.])
+    array =      np.array([1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]) * 100.
+
 
     parameters = optim_params(my_beta, my_max_iter,my_toll)
     output =  solver(objective_function_alfa,array, parameters)
