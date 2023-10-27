@@ -65,7 +65,7 @@ def objective_function(x, alpha):
     if(n <=1):
         raise Exception("x must be atleast 2-dimension vector")
     indexes = np.arange(1, n + 1)
-    alphas = alpha ** (indexes - 1 / (n - 1))
+    alphas = alpha ** ((indexes - 1) / (n - 1))
     values = np.square(x) * alphas
     result = np.sum(values)
     return result
@@ -88,6 +88,7 @@ def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik
     for _ in range(params.max_iter):
          
         previous_func_val = func(x0)
+        print(previous_func_val)
 
         my_result.add_iter(_)
         my_result.add_func_value(previous_func_val)
@@ -96,6 +97,7 @@ def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik
         new_x = x0 - (learn_rate * gradient(x0)) # aktualizacja //zmniejszenie wartosci funkcji celu i zblizanie sie do minimum
 
         x0 = new_x # aktualizacja x
+
         if(_ == 999):
             pass
 
@@ -117,7 +119,7 @@ def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik
     
     return my_result
 
-objective_function_alfa = partial(objective_function, alpha=1)
+objective_function_alfa = partial(objective_function, alpha=10)
 
 def main():
     # --SECTION TO CHOSE VARIABLES-- #
