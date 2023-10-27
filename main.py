@@ -10,7 +10,7 @@ objective_function_alpha_100 = partial(objective_function, alpha=100)
 
 
 def graph(result: optim_result, alhpa):
-    
+
     plt.plot(result.get_iterations, result.get_func_values, label=f"Beta = {result.get_beta}")
 
     plt.xlabel("Iterations")
@@ -25,19 +25,20 @@ graph_alfa_10 = partial(graph, alpha=10)
 graph_alfa_100 = partial(graph, alpha=100)
 
 def main():
-    x = np.array([1.,2.,1.])
-    print(f"x values -> {x}\n")
+    x = np.array([1.,1.,1.,1.,1.,1.,1.,1.,1.,1.])
+    x= x *100.
+    # print(f"x values -> {x}\n")
     optim_param_beta_01 = optim_params(0.1,1000,0.0001)
     optim_param_beta_001 = optim_params(0.01,1000,0.0001)
     optim_param_beta_0001 = optim_params(0.001,1000,0.0001)
 
-    result_1 = solver(objective_function_alpha_10, x, optim_param_beta_01)
-    result_2 = solver(objective_function_alpha_10, x, optim_param_beta_001)
-    result_3 = solver(objective_function_alpha_10, x, optim_param_beta_0001)
-
-    graph(result_1,alhpa=1)
-    graph(result_2,alhpa=1)
-    graph(result_3,alhpa=1)
+    result_1 = solver(objective_function_alpha_100, x, optim_param_beta_01)
+    result_2 = solver(objective_function_alpha_100, x, optim_param_beta_001)
+    result_3 = solver(objective_function_alpha_100, x, optim_param_beta_0001)
+#
+    graph(result_1,alhpa=100)
+    graph(result_2,alhpa=100)
+    # graph(result_3,alhpa=100)
 
     pass
 
