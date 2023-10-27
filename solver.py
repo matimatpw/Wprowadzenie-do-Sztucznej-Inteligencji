@@ -1,106 +1,135 @@
 from autograd import grad
 import numpy as np
 from functools import partial
-
+# from  time import process_time as pc
+import time
 #   nr iteracji od wartosci funkcji celu od biezacego x
 #   czas od
 #
 #
 #
 
-class optim_result_t:
-    def __init__(self, x_table, Beta :float, times: [], iteration_info: int, stop_info: bool) -> None:
-        self.learn_rate_info = Beta
-        self.time = times
-        self.x_history = x_table
-        self.time_history = times
-        self.iteration_number = iteration_info
-        self.stop_info = stop_info
 
+class optim_result:
+    def __init__(self, beta :float) -> None:
+        self.learn_rate_info = beta # PARAMETR KROKU
+        
+        self.iter_history = []
+        self.func_value_history = []
+
+        self.final_time = None
+
+        self.iteration_stop = None
+        self.stop_info = None
+
+    def add_func_value(self,fx) -> None:
+        self.func_value_history.append(fx)
+
+    def add_iter(self, iter) -> None:
+        self.iter_history.append(iter)
+
+    @property
+    def get_iterations(self):
+        return self.iter_history
+
+    @property
+    def get_func_values(self):
+        return self.func_value_history
+
+    @property
+    def get_beta(self):
+        return self.learn_rate_info
+    
     def __str__(self) -> str:
-        body = f"Learn_rate-> {self.learn_rate_info}\nx-> {self.x_history}\n"
+        body = f"Learn_rate-> {self.learn_rate_info}\n"
         if(self.stop_info):
             return f"{body}Function reached max_iteration_limit and exited!"
-        return f"{body}Function >fullfilled< stop_condition and exited on iteration > {self.iteration_number} <"
+        return f"{body}Function >fullfilled< stop_condition and exited on iteration > {self.iteration_stop} <"
 
 
 class optim_params:
-    def __init__(self, alfa:float, max_iterations:int, toll: float) -> None:
-        self.alfa = alfa # learning_rate
+    def __init__(self, beta:float, max_iterations:int, toll: float) -> None:
+        self.beta = beta # learning_rate
         self.max_iter = max_iterations
         self.toll = toll
 
-def target_func(x):
-    return 4*x**2 # 4x^2
 
+#########################################################################
 
-
-def objective_function(x, alpha=1):
+def objective_function(x, alpha):
+    
     # x is a vector of length 10
     # alpha is a scalar
     # returns a scalar
     n = np.size(x) # -> 10
-    x_squared = np.square(x) # squared every element in array
+    if(n <=1):
+        raise Exception("x must be atleast 2-dimension vector")
     indexes = np.arange(1, n + 1)
-    alpha_values = alpha ** (indexes - 1 / (n - 1))
-    values = x_squared * alpha_values
+    alphas = alpha ** (indexes - 1 / (n - 1))
+    values = np.square(x) * alphas
     result = np.sum(values)
     return result
 
+#########################################################################
 
 
+def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik z tymi parametrami
 
-def sphere(x: []):
-    return np.sum(x**2)
+    my_result = optim_result(params.beta)
 
-def solver (func, x0: np.array, params: optim_params) -> optim_result_t: # slownik z tymi parametrami
-    best = []
+
     gradient = grad(func)
-    x = x0
-    learn_rate = params.alfa
+
+    learn_rate = params.beta
     stop_info = True
+    iter_info = params.max_iter
+    print(f"TO JEST pierwsza F(x) -> {func(x0)}\n")
+
     for _ in range(params.max_iter):
+         
+        previous_func_val = func(x0)
 
-        new_x = x - (learn_rate * gradient(x)) # aktualizacja //zmniejszenie wartosci funkcji celu i zblizanie sie do minimum
-                                    #tutaj gradient dziala tylko od skalarnej wartosci a nie od wektra
-        previous_grad = gradient(x)
-        previous_func_val = func(x)
+        my_result.add_iter(_)
+        my_result.add_func_value(previous_func_val)
 
-        x = new_x
+        
+        new_x = x0 - (learn_rate * gradient(x0)) # aktualizacja //zmniejszenie wartosci funkcji celu i zblizanie sie do minimum
 
-        #zmienne lokalne przechowujace nowy x i stary x
+        x0 = new_x # aktualizacja x
+        if(_ == 999):
+            pass
 
-        # if(new_x==0.0):
-        #     print(f"X TO 0 -> iteracja: {_}")
-        #     break
-        # abs(previous_grad - gradient(new_x)) < params.toll
-        if( abs(previous_func_val - func(new_x)) < params.toll):
+        if( abs(previous_func_val - func(new_x)) < params.toll or np.linalg.norm(gradient(new_x)) < params.toll):
+            
+            print(f"TO JEST OSTATNI X -> {new_x}\n")
+            print(f"TO JEST OSTATNIa F(x) -> {func(new_x)}\n")
+            print(f"TO JEST  abs -> {abs(previous_func_val - func(new_x))}\n")
+            print(f"LINEARLG NORM -> {np.linalg.norm(gradient(new_x))}\n")
+
             iter_info = _
             stop_info = False
             break
+    
+    
 
-
-
-    best.append((new_x,f"learn: {learn_rate}" ))
-
-    best.sort()
-    print(best)
-    my_result = optim_result_t(x,learn_rate,3,iter_info,stop_info)
+    my_result.iteration_stop = iter_info
+    my_result.stop_info = stop_info
+    
     return my_result
 
+objective_function_alfa = partial(objective_function, alpha=1)
 
-# --SECTION TO CHOSE VARIABLES-- #
-alfas_to_test = np.array([0.1,0.01,0.001])
-my_alfa = alfas_to_test[0] # learning_rate
-my_max_iter = 1000         # iteration limit
-my_toll = 0.0001           # 3 stopper ( Elipse value )
+def main():
+    # --SECTION TO CHOSE VARIABLES-- #
+    betas_to_test = np.array([0.1,0.01,0.001])
+    my_beta = betas_to_test[0] # learning_rate
+    my_max_iter = 1000         # iteration limit
+    my_toll = 0.0001           # stopper ( Elipse value )
+    array = np.array([1.,2.,1.])
+
+    parameters = optim_params(my_beta, my_max_iter,my_toll)
+    output =  solver(objective_function_alfa,array, parameters)
+    print(output)
 
 
-parameters = optim_params(my_alfa, my_max_iter,my_toll)
-# print(solver(objective_function,np.array([3.,3.]), parameters))
-indexes = np.arange(0, 5,  dtype=int)
-
-print(np.size(indexes))
-print(indexes[1])
-
-print(indexes)
+main()
