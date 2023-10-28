@@ -14,83 +14,100 @@ class optim_result:
     def __init__(self, beta :float) -> None:
         self.learn_rate_info = beta # PARAMETR KROKU
 
-        self.iter_history = []
         self.func_value_history = []
+        self.iter_history = []
 
-        self.final_time = None
+        self.iteration_stop_number = None
+        self.stop_information_toggle = None
 
-        self.iteration_stop = None
-        self.stop_info = None
+        # self.final_time = None # ?
 
-    def add_func_value(self,fx) -> None:
+
+    def add_func_value(self,fx:float) -> None:
         self.func_value_history.append(fx)
 
-    def add_iter(self, iter) -> None:
+    def add_iter(self, iter:int) -> None:
         self.iter_history.append(iter)
 
-    def set_iter_stop(self, iter) -> None:
-        self.iteration_stop = iter
+    def set_iter_stop(self, iter:int) -> None:
+        self.iteration_stop_number = iter
+
+    def set_stop_info_toggle(self,info:str)->None:
+        self.stop_information_toggle = info
 
     @property
-    def get_iterations(self):
+    def learn_info(self)-> float:
+        return self.learn_rate_info
+    
+    @property
+    def stop_info_toggle(self)-> bool:
+        return self.stop_information_toggle
+
+    @property
+    def iter_stop_num(self)->int:
+        return self.iteration_stop_number
+    
+    def get_iterations(self) -> []:
         return self.iter_history
 
-    @property
-    def get_func_values(self):
+    
+    def get_func_values(self) -> []:
         return self.func_value_history
 
-    @property
-    def get_beta(self):
-        return self.learn_rate_info
-
     def __str__(self) -> str:
-        body = f"Learn_rate-> {self.learn_rate_info}\n"
-        if(self.stop_info):
+        body = f"Learn_rate-> {self.learn_info}\n"
+        if(self.stop_info_toggle):
             return f"{body}Function reached max_iteration_limit and exited!"
-        return f"{body}Function >fullfilled< stop_condition and exited on iteration > {self.iteration_stop} <"
+        return f"{body}Function >fullfilled< stop_condition and exited on iteration > {self.iter_stop_num} <"
 
 
 class optim_params:
     def __init__(self, beta:float, max_iterations:int, toll: float) -> None:
-        self.beta = beta # learning_rate
-        self.max_iter = max_iterations
-        self.toll = toll
+        self.my_learn_rate = beta # learning_rate
+        self.my_max_iter = max_iterations
+        self.my_toll = toll
 
+    @property
+    def learn_rate(self) -> float:
+        return self.my_learn_rate
+    
+    @property
+    def max_iter(self) -> int:
+        return self.my_max_iter
+
+    @property
+    def toll(self) ->float:
+        return self.my_toll
 
 #########################################################################
-def objective_function(x, alpha):
-
-    # x is a vector of length 10
-    # alpha is a scalar
-    # returns a scalar
-    n = np.size(x) # -> 10
-    if(n <=1):
+def objective_function(x :np.array, alpha:int):
+    size = np.size(x) # -> 10
+    if(size <=1):
         raise Exception("x must be atleast 2-dimension vector")
-    indexes = np.arange(1, n + 1)
-    alphas = alpha ** ((indexes - 1) / (n - 1))
-    values = np.square(x) * alphas
-    result = np.sum(values)
+    indexes = np.arange(1, size + 1)
+    alphas_vector = alpha ** ((indexes - 1) / (size - 1))
+    final_vector = np.square(x) * alphas_vector
+    result = np.sum(final_vector)
     return result
 #########################################################################
 
 
-def solver (func: callable, x0: np.array, params: optim_params, condition_toggle: bool = True) -> optim_result:
+def solver (func: callable, x0: np.array, params: optim_params, condition_toggle: bool = True, stop_toggle: bool = True) -> optim_result:
 
-    my_result = optim_result(params.beta)
+    my_result = optim_result(params.learn_rate)
 
 
     gradient = grad(func)
 
-    learn_rate = params.beta
-    stop_toggle = True
+    learn_rate = params.learn_rate
     iter_info = params.max_iter
     # print(f"TO JEST pierwsza F(x) -> {func(x0)}\n")
 
-    for _ in range(params.max_iter):
+    for iteration in range(params.max_iter):
 
         previous_func_val = func(x0)
 
-        my_result.add_iter(_)
+        my_result.add_iter(iteration)
         my_result.add_func_value(previous_func_val)
 
 
@@ -107,20 +124,24 @@ def solver (func: callable, x0: np.array, params: optim_params, condition_toggle
             print(f"TO JEST  abs -> {abs(previous_func_val - func(new_x))}\n")
             print(f"LINEARLG NORM -> {np.linalg.norm(gradient(new_x))}\n")
 
-            iter_info = _
+            iter_info = iteration
             stop_toggle = False
             break
 
 
 
-    my_result.iteration_stop = iter_info
-    my_result.stop_info = stop_toggle
+    my_result.set_iter_stop(iter_info)
+    my_result.set_stop_info_toggle(stop_toggle)
 
     return my_result
 
-objective_function_alfa = partial(objective_function, alpha=10)
+
+
+
+
 
 def main():
+    objective_function_alfa = partial(objective_function, alpha=10)
     # --SECTION TO CHOSE VARIABLES-- #
     betas_to_test = np.array([0.1,0.01,0.001])
     my_beta = betas_to_test[2] # learning_rate
@@ -129,7 +150,7 @@ def main():
     array =      np.array([1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]) * 100.
 
 
-    parameters = optim_params(my_beta, my_max_iter,my_toll)
+    parameters = optim_params(0.1, my_max_iter,my_toll)
     output =  solver(objective_function_alfa,array, parameters)
     print(output)
 

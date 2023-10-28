@@ -10,7 +10,7 @@ objective_function_alpha_100 = partial(objective_function, alpha=100)
 
 
 def graph(result: optim_result, alhpa):
-    plt.plot(result.get_iterations, result.get_func_values, label=f"Beta = {result.get_beta}")
+    plt.plot(result.get_iterations(), result.get_func_values(), label=f"Beta = {result.learn_info}")
 
     plt.xlabel("Iterations")
     plt.ylabel("Function values")
