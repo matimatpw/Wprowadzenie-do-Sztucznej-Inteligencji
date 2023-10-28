@@ -28,6 +28,9 @@ class optim_result:
     def add_iter(self, iter) -> None:
         self.iter_history.append(iter)
 
+    def set_iter_stop(self, iter) -> None:
+        self.iteration_stop = iter
+
     @property
     def get_iterations(self):
         return self.iter_history
@@ -55,7 +58,6 @@ class optim_params:
 
 
 #########################################################################
-
 def objective_function(x, alpha):
 
     # x is a vector of length 10
@@ -69,11 +71,10 @@ def objective_function(x, alpha):
     values = np.square(x) * alphas
     result = np.sum(values)
     return result
-
 #########################################################################
 
 
-def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik z tymi parametrami
+def solver (func: callable, x0: np.array, params: optim_params, condition_toggle: bool = True) -> optim_result:
 
     my_result = optim_result(params.beta)
 
@@ -81,14 +82,13 @@ def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik
     gradient = grad(func)
 
     learn_rate = params.beta
-    stop_info = True
+    stop_toggle = True
     iter_info = params.max_iter
-    print(f"TO JEST pierwsza F(x) -> {func(x0)}\n")
+    # print(f"TO JEST pierwsza F(x) -> {func(x0)}\n")
 
     for _ in range(params.max_iter):
 
         previous_func_val = func(x0)
-        # print(previous_func_val)
 
         my_result.add_iter(_)
         my_result.add_func_value(previous_func_val)
@@ -98,9 +98,7 @@ def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik
 
         x0 = new_x # aktualizacja x
 
-        if(_ == 999):
-            pass
-            #if condition to check :
+        
         if( abs(previous_func_val - func(new_x)) < params.toll or np.linalg.norm(gradient(new_x)) < params.toll):
 
             print(f"TO JEST OSTATNI X -> {new_x}\n")
@@ -110,13 +108,13 @@ def solver (func, x0: np.array, params: optim_params) -> optim_result: # slownik
             print(f"LINEARLG NORM -> {np.linalg.norm(gradient(new_x))}\n")
 
             iter_info = _
-            stop_info = False
+            stop_toggle = False
             break
 
 
 
     my_result.iteration_stop = iter_info
-    my_result.stop_info = stop_info
+    my_result.stop_info = stop_toggle
 
     return my_result
 
@@ -135,5 +133,5 @@ def main():
     output =  solver(objective_function_alfa,array, parameters)
     print(output)
 
-
-main()
+if __name__ =="__main__":
+    main()
