@@ -126,7 +126,7 @@ def solver (func: callable, x0: np.array, params: optim_params, condition_toggle
 
 
 def main():
-    objective_function_alfa = partial(objective_function, alpha=100)
+    objective_function_alfa = partial(objective_function, alpha=10)
     # --SECTION TO CHOSE VARIABLES-- #
     my_max_iter = 1000         # iteration limit
     my_toll = 0.0001           # stopper ( Elipse value )
@@ -134,7 +134,7 @@ def main():
 
 #                            (beta,  max_iter,   toll )
     parameters = optim_params(0.1, my_max_iter,my_toll)
-    output =  solver(objective_function_alfa,array, parameters)
+    output =  solver(objective_function_alfa,array, parameters,False)
     print(output)
 
 if __name__ =="__main__":
