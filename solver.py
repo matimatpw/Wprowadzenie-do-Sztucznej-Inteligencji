@@ -1,13 +1,8 @@
 from autograd import grad
 import numpy as np
 from functools import partial
-# from  time import process_time as pc
-import time
 #   nr iteracji od wartosci funkcji celu od biezacego x
-#   czas od
-#
-#
-#
+
 
 
 class optim_result:
@@ -61,10 +56,10 @@ class optim_result:
         return self.func_value_history
 
     def __str__(self) -> str:
-        body = f"*Learn_rate-> {self.learn_info}\n*Last f(x) value-> {self.get_func_values()[-1]}\n"
+        body = f"**Learn_rate-> {self.learn_info}\n*Last f(x) value-> {self.get_func_values()[-1]}\n"
         if(self.stop_info_toggle):
-            return f"{body}*Function reached max_iteration_limit and exited!"
-        return f"{body}*Function >fullfilled< stop_condition and exited on iteration > {self.iter_stop_num} <"
+            return f"{body}*Function reached max_iteration_limit and exited!\n"
+        return f"{body}*Function >fullfilled< stop_condition and exited on iteration > {self.iter_stop_num} <\n"
 
 
 class optim_params:

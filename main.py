@@ -3,6 +3,8 @@ from functools import partial
 import numpy as np
 from matplotlib import pyplot as plt
 import time
+import json
+import warnings
 
 class objective_functions_factory:
     def __init__(self) -> None:
@@ -45,6 +47,8 @@ class result:
     def create_results_beta01(self,obj_func_alpha: partial, result_list: [optim_result], my_time:{},alpha_str:str) -> None:
         time_start = time.time()
         my_result = solver(obj_func_alpha, self.x, self.beta_01)
+        print(my_result) #########################
+
         time_stop = time.time()
         result_list.append(my_result)
         my_time[alpha_str].append(time_stop - time_start)
@@ -52,6 +56,8 @@ class result:
     def create_results_beta001(self,obj_func_alpha:partial, result_list:[optim_result], my_time:{},alpha_str:str) -> None:
         time_start = time.time()
         my_result = solver(obj_func_alpha, self.x, self.beta_001)
+        print(my_result) #########################
+
         time_stop = time.time()
         result_list.append(my_result)
         my_time[alpha_str].append(time_stop - time_start)
@@ -59,6 +65,8 @@ class result:
     def create_results_beta0001(self,obj_func_alpha:partial,result_list: [optim_result],my_time:{},alpha_str:str) -> None:
         time_start = time.time()
         my_result = solver(obj_func_alpha, self.x, self.beta_0001)
+        print(my_result) #########################
+
         time_stop = time.time()
         result_list.append(my_result)
         my_time[alpha_str].append(time_stop - time_start)
@@ -135,5 +143,9 @@ def main() -> None:
 
     print(my_time)
 
+    with open("solver_times.json", "w") as file:
+        json.dump(my_time, file,indent=4)
+
 if __name__ == "__main__":
+    warnings.filterwarnings("ignore", category=RuntimeWarning)
     main()
