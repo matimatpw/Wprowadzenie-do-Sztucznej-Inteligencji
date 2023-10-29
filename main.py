@@ -130,7 +130,7 @@ def main() -> None:
     my_result.create_results_beta01(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
     my_result.create_results_beta001(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
     my_result.create_results_beta0001(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
-    # # graph_alfa_100(my_result.results_alfa100, "alfa_100_betas.pdf")
+    # # graph_alfa_100(my_result.results_alfa100, "alfa_100_betas.pdf") # --> weird plot
     # graph_alfa100_each_beta(my_result.results_alfa100, "alfa_100_betas.pdf")
 
     print(my_time)
