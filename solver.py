@@ -36,6 +36,12 @@ class optim_result:
         self.stop_information_toggle = info
 
     @property
+    def last_func_value(self) -> float:
+        if(not self.func_value_history):
+            raise Exception("List is empty! No last value!")
+        return self.func_value_history[-1]
+
+    @property
     def learn_info(self)-> float:
         return self.learn_rate_info
     
@@ -55,10 +61,10 @@ class optim_result:
         return self.func_value_history
 
     def __str__(self) -> str:
-        body = f"Learn_rate-> {self.learn_info}\n"
+        body = f"*Learn_rate-> {self.learn_info}\n*Last f(x) value-> {self.get_func_values()[-1]}\n"
         if(self.stop_info_toggle):
-            return f"{body}Function reached max_iteration_limit and exited!"
-        return f"{body}Function >fullfilled< stop_condition and exited on iteration > {self.iter_stop_num} <"
+            return f"{body}*Function reached max_iteration_limit and exited!"
+        return f"{body}*Function >fullfilled< stop_condition and exited on iteration > {self.iter_stop_num} <"
 
 
 class optim_params:
@@ -80,12 +86,12 @@ class optim_params:
         return self.my_toll
 
 #########################################################################
-def objective_function(x :np.array, alpha:int):
+def objective_function(x :np.array, alpha:int) -> float:
     size = np.size(x) # -> 10
     if(size <=1):
         raise Exception("x must be atleast 2-dimension vector")
-    indexes = np.arange(1, size + 1)
-    alphas_vector = alpha ** ((indexes - 1) / (size - 1))
+    sum_values = np.arange(1, size + 1) # [1,2 ... 10]
+    alphas_vector = alpha ** ((sum_values - 1) / (size - 1))
     final_vector = np.square(x) * alphas_vector
     result = np.sum(final_vector)
     return result
@@ -96,12 +102,10 @@ def solver (func: callable, x0: np.array, params: optim_params, condition_toggle
 
     my_result = optim_result(params.learn_rate)
 
-
     gradient = grad(func)
 
     learn_rate = params.learn_rate
     iter_info = params.max_iter
-    # print(f"TO JEST pierwsza F(x) -> {func(x0)}\n")
 
     for iteration in range(params.max_iter):
 
@@ -111,24 +115,14 @@ def solver (func: callable, x0: np.array, params: optim_params, condition_toggle
         my_result.add_func_value(previous_func_val)
 
 
-        new_x = x0 - (learn_rate * gradient(x0)) # aktualizacja //zmniejszenie wartosci funkcji celu i zblizanie sie do minimum
+        new_x = x0 - (learn_rate * gradient(x0))
+        x0 = new_x # x update
 
-        x0 = new_x # aktualizacja x
-
-        
-        if( abs(previous_func_val - func(new_x)) < params.toll or np.linalg.norm(gradient(new_x)) < params.toll):
-
-            print(f"TO JEST OSTATNI X -> {new_x}\n")
-            print(f"TO JEST OSTATNIa F(x) -> {func(new_x)}\n")
-            print(f"TO JEST previous F(x) -> {previous_func_val}\n")
-            print(f"TO JEST  abs -> {abs(previous_func_val - func(new_x))}\n")
-            print(f"LINEARLG NORM -> {np.linalg.norm(gradient(new_x))}\n")
-
-            iter_info = iteration
-            stop_toggle = False
-            break
-
-
+        if(condition_toggle):
+            if(abs(previous_func_val - func(new_x)) < params.toll or np.linalg.norm(gradient(new_x)) < params.toll):
+                iter_info = iteration
+                stop_toggle = False
+                break
 
     my_result.set_iter_stop(iter_info)
     my_result.set_stop_info_toggle(stop_toggle)
@@ -136,20 +130,14 @@ def solver (func: callable, x0: np.array, params: optim_params, condition_toggle
     return my_result
 
 
-
-
-
-
 def main():
-    objective_function_alfa = partial(objective_function, alpha=10)
+    objective_function_alfa = partial(objective_function, alpha=100)
     # --SECTION TO CHOSE VARIABLES-- #
-    betas_to_test = np.array([0.1,0.01,0.001])
-    my_beta = betas_to_test[2] # learning_rate
     my_max_iter = 1000         # iteration limit
     my_toll = 0.0001           # stopper ( Elipse value )
     array =      np.array([1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]) * 100.
 
-
+#                            (beta,  max_iter,   toll )
     parameters = optim_params(0.1, my_max_iter,my_toll)
     output =  solver(objective_function_alfa,array, parameters)
     print(output)
