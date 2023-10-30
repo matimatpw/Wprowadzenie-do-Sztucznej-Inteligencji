@@ -1,9 +1,6 @@
 from autograd import grad
 import numpy as np
 from functools import partial
-#   nr iteracji od wartosci funkcji celu od biezacego x
-
-
 
 class optim_result:
     def __init__(self, beta :float) -> None:
@@ -126,16 +123,20 @@ def solver (func: callable, x0: np.array, params: optim_params, condition_toggle
 
 
 def main():
-    objective_function_alfa = partial(objective_function, alpha=10)
-    # --SECTION TO CHOSE VARIABLES-- #
-    my_max_iter = 1000         # iteration limit
-    my_toll = 0.0001           # stopper ( Elipse value )
-    array =      np.array([1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]) * 100.
+#     objective_function_alfa = partial(objective_function, alpha=1)
+#     # --SECTION TO CHOSE VARIABLES-- #
+#     my_max_iter = 1000         # iteration limit
+#     my_toll = 0.0001           # stopper ( Elipse value )
+#     array =      np.random.uniform(-100.,100.,size=10)
+#     print(array)
 
-#                            (beta,  max_iter,   toll )
-    parameters = optim_params(0.1, my_max_iter,my_toll)
-    output =  solver(objective_function_alfa,array, parameters,False)
-    print(output)
+# #                            (beta,  max_iter,   toll )
+#     parameters = optim_params(0.1, my_max_iter,my_toll)
+#     output =  solver(objective_function_alfa,array, parameters,False)
+#     print(output)
+    pass
 
 if __name__ =="__main__":
     main()
+    array =      np.random.uniform(-100.,100.,size=10)
+    print(array)

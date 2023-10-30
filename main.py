@@ -47,29 +47,29 @@ class result:
     def create_results_beta01(self,obj_func_alpha: partial, result_list: [optim_result], my_time:{},alpha_str:str) -> None:
         time_start = time.time()
         my_result = solver(obj_func_alpha, self.x, self.beta_01)
-        print(my_result) #########################
+        # print(my_result) #########################
 
         time_stop = time.time()
         result_list.append(my_result)
-        my_time[alpha_str].append(time_stop - time_start)
+        my_time[alpha_str]["Beta=0.1"] = (time_stop - time_start)
 
     def create_results_beta001(self,obj_func_alpha:partial, result_list:[optim_result], my_time:{},alpha_str:str) -> None:
         time_start = time.time()
         my_result = solver(obj_func_alpha, self.x, self.beta_001)
-        print(my_result) #########################
+        # print(my_result) #########################
 
         time_stop = time.time()
         result_list.append(my_result)
-        my_time[alpha_str].append(time_stop - time_start)
+        my_time[alpha_str]["Beta=0.01"] = (time_stop - time_start)
     
     def create_results_beta0001(self,obj_func_alpha:partial,result_list: [optim_result],my_time:{},alpha_str:str) -> None:
         time_start = time.time()
         my_result = solver(obj_func_alpha, self.x, self.beta_0001)
-        print(my_result) #########################
+        # print(my_result) #########################
 
         time_stop = time.time()
         result_list.append(my_result)
-        my_time[alpha_str].append(time_stop - time_start)
+        my_time[alpha_str]["Beta=0.001"] = (time_stop - time_start)
 
 
 def graph(my_result_list:[optim_result], filename:str, alpha:int)-> None:
@@ -105,8 +105,7 @@ graph_alfa100_each_beta = partial(graph_each_beta, alpha=100)
 
 
 def main() -> None:
-    x = np.array([1.,1.,1.,1.,1.,1.,1.,1.,1.,1.])
-    x = x *100.
+    x = np.random.uniform(-100.,100.,size=10)
 
     obj_function = objective_functions_factory()
     
@@ -115,30 +114,30 @@ def main() -> None:
     optim_param_beta_0001 = optim_params(0.001,1000,0.0001)
 
     my_result = result(optim_param_beta_01,optim_param_beta_001,optim_param_beta_0001,x,obj_function)
-    my_time = {"alpha1":[],
-               "alpha10":[],
-               "alpha100":[]}
+    my_time = {"alpha1":{"Beta=0.1":None},
+               "alpha10":{"Beta=0.01":None},
+               "alpha100":{"Beta=0.001":None}}
 
-       ## results for alpha = 1
+    #    ## results for alpha = 1
     my_result.create_results_beta01(obj_function.alpha_1,my_result.results_alfa1, my_time, "alpha1")
     my_result.create_results_beta001(obj_function.alpha_1,my_result.results_alfa1,my_time,"alpha1")
     my_result.create_results_beta0001(obj_function.alpha_1,my_result.results_alfa1, my_time,"alpha1")
-    graph_alfa_1(my_result.results_alfa1, "alfa_1_betas.pdf")
+    # graph_alfa_1(my_result.results_alfa1, "alfa_1_betas.pdf")
     
 
 
     #   ## results for alpha = 10
-    # my_result.create_results_beta01(obj_function.alpha_10,my_result.results_alfa10, my_time, "alpha10")
-    # my_result.create_results_beta001(obj_function.alpha_10,my_result.results_alfa10, my_time, "alpha10")
-    # my_result.create_results_beta0001(obj_function.alpha_10,my_result.results_alfa10, my_time, "alpha10")
+    my_result.create_results_beta01(obj_function.alpha_10,my_result.results_alfa10, my_time, "alpha10")
+    my_result.create_results_beta001(obj_function.alpha_10,my_result.results_alfa10, my_time, "alpha10")
+    my_result.create_results_beta0001(obj_function.alpha_10,my_result.results_alfa10, my_time, "alpha10")
     # graph_alfa_10(my_result.results_alfa10, "alfa_10_betas.pdf")
 
 
-      ## results for alpha = 100
-    # my_result.create_results_beta01(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
-    # my_result.create_results_beta001(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
-    # my_result.create_results_beta0001(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
-    # # graph_alfa_100(my_result.results_alfa100, "alfa_100_betas.pdf") # --> weird plot
+      # results for alpha = 100
+    my_result.create_results_beta01(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
+    my_result.create_results_beta001(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
+    my_result.create_results_beta0001(obj_function.alpha_100,my_result.results_alfa100, my_time, "alpha100")
+    # graph_alfa_100(my_result.results_alfa100, "alfa_100_betas.pdf") # --> weird plot
     # graph_alfa100_each_beta(my_result.results_alfa100, "alfa_100_betas.pdf")
 
     print(my_time)
@@ -147,5 +146,6 @@ def main() -> None:
         json.dump(my_time, file,indent=4)
 
 if __name__ == "__main__":
-    warnings.filterwarnings("ignore", category=RuntimeWarning)
+    
+    # warnings.filterwarnings("ignore", category=RuntimeWarning)
     main()
