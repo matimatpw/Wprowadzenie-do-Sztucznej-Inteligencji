@@ -9,23 +9,23 @@ def evolution_1p1(f, x0: [float], mutation_rate: float, control_rate: int, max_i
     
     mean = 0.0              # srednia arytmetyczna -> wokol takiej wartosci bedziemy losowac
     deviation = 1.0         # odchylenie standardowe
-    better = 0
+    success = 0
     for iteration in range(max_iter):
 # MUTATION (metoda Gaussa)
         y = np.array([val + mutation_rate * random.normalvariate(mean, deviation) for val in x])
 # EVALUATE OFFSPRING
         if f(y) <= f(x): # poprawa potomka
-            better += 1
+            success += 1
             x = y
 #UPDATING mutation_rate based on actual status
         if iteration % control_rate == 0: # teraz sprawdzamy czy w przeciagu <a> iteracji
-            if float(better) / float(control_rate) > 0.5:
+            if float(success) / float(control_rate) > 0.5:
                 mutation_rate *= 1.5
-            if float(better) / float(control_rate) < 0.5:
+            if float(success) / float(control_rate) < 0.5:
                 mutation_rate *= 0.5
-            better = 0
+            success = 0
         fx_value = f(x)
-        print(f"iteration: {iteration},\tvalue: {fx_value:.3f}")
+        print(f"iteration: {iteration},\tvalue: {fx_value}")
     return [x, f(x)]
 
 
@@ -39,7 +39,7 @@ X, Y = np.meshgrid(x_range, y_range)
 # x = np.column_stack((X.ravel(), Y.ravel()))
 # print(x.shape)
 
-# x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])        ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
+x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])        ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
 # x = np.array([[X[1,1], Y[1,1]]]) 
 
 # x = np.empty((0,2))
@@ -52,8 +52,8 @@ X, Y = np.meshgrid(x_range, y_range)
 
 
 
-print(f1(X))
-# print(evolution_1p1(f1,x,1.0,10,1000))
+# print(f1(x))
+print(evolution_1p1(f1,x,1.0,10,1000))
 
 
 
