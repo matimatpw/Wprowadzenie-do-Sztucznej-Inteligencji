@@ -39,8 +39,12 @@ X, Y = np.meshgrid(x_range, y_range)
 # x = np.column_stack((X.ravel(), Y.ravel()))
 # print(x.shape)
 
-x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])        ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
+
+
+x = np.array([[np.random.uniform(-100.0, 100.0) for _ in range(10)]])
+# x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])        ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
 # x = np.array([[X[1,1], Y[1,1]]]) 
+print(x)
 
 # x = np.empty((0,2))
 # for i in range(X.shape[0]):
