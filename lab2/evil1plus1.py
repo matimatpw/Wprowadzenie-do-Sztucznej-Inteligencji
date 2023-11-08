@@ -13,16 +13,17 @@ def evolution_1p1(f, x0: [float], mutation_rate: float, control_rate: int, max_i
     for iteration in range(max_iter):
 # MUTATION (metoda Gaussa)
         y = np.array([val + mutation_rate * random.normalvariate(mean, deviation) for val in x])
+
 # EVALUATE OFFSPRING
         if f(y) <= f(x): # poprawa potomka
             success += 1
             x = y
 #UPDATING mutation_rate based on actual status
         if iteration % control_rate == 0: # teraz sprawdzamy czy w przeciagu <a> iteracji
-            if float(success) / float(control_rate) > 0.5:
-                mutation_rate *= 1.5
-            if float(success) / float(control_rate) < 0.5:
-                mutation_rate *= 0.5
+            if float(success) / float(control_rate) > 0.3:
+                mutation_rate *= 1.3
+            if float(success) / float(control_rate) < 0.3:
+                mutation_rate *= 0.3
             success = 0
         fx_value = f(x)
         print(f"iteration: {iteration},\tvalue: {fx_value}")
@@ -41,9 +42,9 @@ X, Y = np.meshgrid(x_range, y_range)
 
 
 
-x = np.array([[np.random.uniform(-100.0, 100.0) for _ in range(10)]])
+# x = np.array([[np.random.uniform(-100.0, 100.0) for _ in range(10)]])
 # x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])        ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
-# x = np.array([[X[1,1], Y[1,1]]]) 
+x = np.array([[X[1,1], Y[1,1]]]) 
 print(x)
 
 # x = np.empty((0,2))
@@ -52,7 +53,9 @@ print(x)
 #         x = np.vstack((x, [X[i, j], Y[i, j]]))                                                               ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
 
 
-
+#TODO czy wykonac program i przy nastepnym uruchomieniu algorytm na korzystac z poprzedniej populacji?
+#TODO czy wnioskowac jak algorytm sie szachowuje przy kazdym kolejnym uruchomieniu
+#TODO jak z ta 10 wymiarowoscia funckji?
 
 
 
