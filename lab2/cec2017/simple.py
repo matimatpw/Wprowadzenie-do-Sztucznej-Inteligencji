@@ -21,6 +21,7 @@ def f1(x, rotation=None, shift=None):
     """
     x = np.array(x)
     nx = x.shape[1]
+    # nx = 2
 
     if rotation is None:
         rotation = transforms.rotations[nx][0]

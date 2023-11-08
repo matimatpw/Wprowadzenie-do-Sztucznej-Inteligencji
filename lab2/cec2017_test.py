@@ -45,10 +45,11 @@ def main():
         for j in range(X.shape[1]):
             x = np.array([X[i, j], Y[i, j]])
             Z2[i, j] = F9(x)
+            
 
     # Rysowanie wykresu 3D dla F1
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
+    ax = plt.axes(projection="3d")
     ax.plot_surface(X, Y, Z, cmap="viridis")
 
     # Dodanie kolorowej mapy
@@ -79,3 +80,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
