@@ -137,7 +137,6 @@ def main():
     array = np.random.uniform(-100.0, 100.0, size=10)
     print(array)
 
-    #                            (beta,  max_iter,   toll )
     parameters = optim_params(0.1, my_max_iter, my_toll)
     output = solver(objective_function_alfa, array, parameters, False)
     print(output)
