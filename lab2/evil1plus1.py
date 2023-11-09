@@ -7,15 +7,15 @@ from cec2017_test import F1, f1, f9
 #     self.control_rate
 
 
-def evolution_1p1(f, x0: [float], mutation_rate: float, control_rate: int, max_iter, stepsize_adaptation):
+def evolution_1p1(f, x0: [float], step_size: float, control_rate: int, max_iter, stepsize_adaptation=None):
     x = x0.copy()
 
     mean = 0.0              # srednia arytmetyczna -> wokol takiej wartosci bedziemy losowac
-    deviation = 1.0         # odchylenie standardowe
+    deviation = 10.0         # odchylenie standardowe
     success = 0
     for iteration in range(max_iter):
 # MUTATION (metoda Gaussa)
-        y = np.array([val + mutation_rate * random.normalvariate(mean, deviation) for val in x])
+        y = np.array([val + step_size * random.normalvariate(mean, deviation) for val in x])
 
 # EVALUATE OFFSPRING
         if f(y) <= f(x): # poprawa potomka
@@ -25,9 +25,9 @@ def evolution_1p1(f, x0: [float], mutation_rate: float, control_rate: int, max_i
         # mutatation_rate = stepsize_adaptation(mutation_rate, optim_params)
         if iteration % control_rate == 0: # teraz sprawdzamy czy w przeciagu <a> iteracji
             if float(success) / float(control_rate) > 0.3:
-                mutation_rate *= 1.3
+                step_size *= 1.3
             if float(success) / float(control_rate) < 0.3:
-                mutation_rate *= 0.3
+                step_size *= 0.3
             success = 0
         fx_value = f(x)
         print(f"iteration: {iteration},\tvalue: {fx_value}")
@@ -66,7 +66,7 @@ print(x.shape)
 
 # print(f1(x))
 # print(f9(x))
-list_xd = evolution_1p1(f9,x,1.0,10,100)
+list_xd = evolution_1p1(f1,x,1.0,10,1000)
 print(list_xd)
 # print(list_xd[0])
 print("____________________________\n")
