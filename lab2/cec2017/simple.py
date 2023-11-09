@@ -20,7 +20,7 @@ def f1(x, rotation=None, shift=None):
             vector from the benchmark suite will be used.
     """
     x = np.array(x)
-    nx = x.shape[1]
+    nx = x.shape[1]#(1,10)
     # nx = 2
 
     if rotation is None:
