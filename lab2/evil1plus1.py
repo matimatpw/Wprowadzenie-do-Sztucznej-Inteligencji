@@ -1,12 +1,15 @@
 import random
 import numpy as np
 
-from cec2017_test import F1, f1
+from cec2017_test import F1, f1, f9
+
+# class stepsize_adaptation:
+#     self.control_rate
 
 
-def evolution_1p1(f, x0: [float], mutation_rate: float, control_rate: int, max_iter):
+def evolution_1p1(f, x0: [float], mutation_rate: float, control_rate: int, max_iter, stepsize_adaptation):
     x = x0.copy()
-    
+
     mean = 0.0              # srednia arytmetyczna -> wokol takiej wartosci bedziemy losowac
     deviation = 1.0         # odchylenie standardowe
     success = 0
@@ -19,6 +22,7 @@ def evolution_1p1(f, x0: [float], mutation_rate: float, control_rate: int, max_i
             success += 1
             x = y
 #UPDATING mutation_rate based on actual status
+        # mutatation_rate = stepsize_adaptation(mutation_rate, optim_params)
         if iteration % control_rate == 0: # teraz sprawdzamy czy w przeciagu <a> iteracji
             if float(success) / float(control_rate) > 0.3:
                 mutation_rate *= 1.3
@@ -44,8 +48,9 @@ X, Y = np.meshgrid(x_range, y_range)
 
 # x = np.array([[np.random.uniform(-100.0, 100.0) for _ in range(10)]])
 # x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])        ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
-x = np.array([[X[1,1], Y[1,1]]]) 
-print(x)
+x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])
+print(x.shape)
+# print(x.shape)
 
 # x = np.empty((0,2))
 # for i in range(X.shape[0]):
@@ -60,7 +65,14 @@ print(x)
 
 
 # print(f1(x))
-print(evolution_1p1(f1,x,1.0,10,1000))
+# print(f9(x))
+list_xd = evolution_1p1(f9,x,1.0,10,100)
+print(list_xd)
+# print(list_xd[0])
+print("____________________________\n")
+# print(evolution_1p1(f9,list_xd[0],1.0,10,100))
+#start-point 100... / random
+
 
 
 
