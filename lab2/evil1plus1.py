@@ -65,14 +65,9 @@ def evolution_1p1(f:callable, x0: [float], o_p:optim_params, stepsize_adaptation
 
     for iteration in range(o_p.max_iter):
 # MUTATION (metoda Gaussa)
-        # print(x)
-        # y = np.array([val + o_p.step_size * random.normalvariate(o_p.mean, o_p.deviation) for val in x])
         my_y = np.random.normal(0.,1.,(1,10))
         my_y *= 1.0
         y = x + my_y
-        # print(y)
-        # return
-#TODO correct y_array so that it randoms each value in x_array ( now it applies the same value for ale the elements in x_arr!!!)
 
 # EVALUATE OFFSPRING
         if f(y) <= f(x): # poprawa potomka
@@ -89,28 +84,13 @@ def evolution_1p1(f:callable, x0: [float], o_p:optim_params, stepsize_adaptation
     return [x, f(x)]
 
 
-#--GENEROIWAnie populacji--#
-x_range = np.linspace(-100, 100, 10)
-y_range = np.linspace(-100, 100, 10)
-# print(x_range)
-X, Y = np.meshgrid(x_range, y_range)
-
-
-# x = np.column_stack((X.ravel(), Y.ravel()))
-# print(x.shape)
 
 
 
-x = np.array([[np.random.uniform(100.0, 100.0) for _ in range(10)]])
-# x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])        ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
-# x = np.array([[X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1],X[1,1], Y[1,1]]])
-print(x)
-# print(x.shape)
-print("____________________________\n")
-# x = np.empty((0,2))
-# for i in range(X.shape[0]):
-#     for j in range(X.shape[1]):
-#         x = np.vstack((x, [X[i, j], Y[i, j]]))                                                               ### DLA WYMIAROWOSCI 10 CZYLI [[X[1,1], Y[1,1], Z ... Z10[1,1]  ]]
+
+
+x = np.random.uniform(100.0, 100.0, (1,10))
+
 
 
 #TODO czy wykonac program i przy nastepnym uruchomieniu algorytm na korzystac z poprzedniej populacji?
@@ -121,17 +101,10 @@ print("____________________________\n")
 my_optim_params = optim_params()
 
 
-print(evolution_1p1(f9,x,my_optim_params,stepsize_adaptation))
-
-# print(f1(x))
-# print(f9(x))
-# list_xd = evolution_1p1(f9,x,1.0,10,100)
-# print(list_xd)
-# print(list_xd[0])
-print("____________________________\n")
-# print(evolution_1p1(f9,list_xd[0],1.0,10,100))
-#start-point 100... / random
+print(evolution_1p1(f1,x,my_optim_params,stepsize_adaptation))
 
 
 
 
+
+print(x)
