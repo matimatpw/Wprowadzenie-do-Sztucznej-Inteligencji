@@ -1,1 +1,1 @@
- np.random.uniform(-100.0, 100.0, size=10)
+np.random.uniform(100.0, 100.0) * random.normalvariate(0.,1.)

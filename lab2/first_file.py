@@ -17,7 +17,7 @@
 
 # # print(Z2.shape)
 # xd = np.array([[-100., -100.,10]])
-# print(xd.shape)
+
 
 
 
@@ -59,37 +59,40 @@ y = np.array([val + 1.0 * random.normalvariate(0., 1.) for val in x0])
 
 
 
-print()
+# print()
 
-print(random.normalvariate(0.,1.))
-print(np.random.normal(0.,1.,(1,10)))
+# print(random.normalvariate(0.,1.))
+# print(np.random.normal(0.,1.,(1,10)))
 
-print()
+# print()
 
 
 
 import numpy as np
 
-# Create a random array of shape (1, 10)
-array1 = np.random.uniform(0.0, 1.0, (1, 10))
+# # Create a random array of shape (1, 10)
+# array1 = np.random.uniform(0.0, 1.0, (1, 10))
 
-# Create another array of shape (1, 10) or any compatible shape
-array2 = np.random.uniform(1.0, 2.0, (1, 10))
-# print(array1.shape)
-# Multiply each element of array1 by the corresponding element of array2
-result_array = array1 + array2
+# # Create another array of shape (1, 10) or any compatible shape
+# array2 = np.random.uniform(1.0, 2.0, (1, 10))
+# # print(array1.shape)
+# # Multiply each element of array1 by the corresponding element of array2
+# result_array = array1 + array2
 
-# Print the result
-print(result_array)
+# # Print the result
+# print(result_array)
 
-print("XDDDD")
+# print("XDDDD")
 
-my_x = np.random.uniform(100.,100., (1, 10))
+# my_x = np.random.uniform(100.,100., (1, 10))
 
-my_y = np.random.normal(0.,1.,(1,10))
-my_y *= 1.0
-my_y = my_x + my_y
+# my_y = np.random.normal(0.,1.,(1,10))
+# my_y *= 1.0
+# my_y = my_x + my_y
+# last_100_elements = my_y[-50:]
+# if np.all(last_100_elements) == last_100_elements[0]:
 
+# print(xxx)
 # import random
 # import numpy as np
 
@@ -215,6 +218,7 @@ my_y = my_x + my_y
 # # print(evolution_1p1(f9,list_xd[0],1.0,10,100))
 # #start-point 100... / random
 
+# print(xd.shape)
 
-
-
+xd = [1,2,3,4,5]
+print(xd[-4])
