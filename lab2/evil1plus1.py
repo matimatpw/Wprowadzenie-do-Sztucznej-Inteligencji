@@ -116,7 +116,7 @@ my_optim_params = optim_params()
 
 # print(f1(x))
 # print(f9(x))
-list_xd = evolution_1p1(f1,x,my_optim_params,stepsize_adaptation)
+list_xd = evolution_1p1(f9,x,1.0,10,100)
 print(list_xd)
 # print(list_xd[0])
 print("____________________________\n")
