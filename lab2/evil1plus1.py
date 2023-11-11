@@ -47,7 +47,7 @@ class optim_result:
     def __str__(self) -> str:
         exit_info = self.exit_info
         last_x_info = f"\nLast x -> {self.last_x}"
-        min_f_info = f"\nMinimum f(x) -> {self.func_value_history[-1]}"
+        min_f_info = f"\nMinimum f(x) -> {self.func_value_history[-1]:.3f}"
         iteration_info = f"\nExited on iteration -> {self.iteration_history[-1]}"
         return f"{exit_info}{last_x_info}{min_f_info}{iteration_info}"
 
