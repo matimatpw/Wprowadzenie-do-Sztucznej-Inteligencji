@@ -45,7 +45,7 @@ def main():
         for j in range(X.shape[1]):
             x = np.array([X[i, j], Y[i, j]])
             Z2[i, j] = F9(x)
-            
+
 
     # Rysowanie wykresu 3D dla F1
     fig = plt.figure()
@@ -80,4 +80,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
