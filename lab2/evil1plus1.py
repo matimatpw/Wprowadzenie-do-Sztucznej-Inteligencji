@@ -143,6 +143,9 @@ def evolution_1p1(f:callable, x0: [float], o_p:optim_params, stepsize_adaptation
     return result
 
 
+def calculate_average(*arrays) -> list:
+    return [sum(values) / len(arrays) for values in zip(*arrays)]
+
 def main() -> None:
     x = np.random.uniform(100.0, 100.0, (1,10))
 
@@ -172,16 +175,25 @@ def main() -> None:
     result_4 = evolution_1p1(f9,x,my_optim_params_4,stepsize_adaptation)
     print(result_1,result_2,result_3, result_4)
 
-    plt.semilogy(result_1.iteration_history, result_1.func_value_history, label="First_try", )
-    plt.semilogy(result_2.iteration_history, result_2.func_value_history, label="Second_try",)
-    plt.semilogy(result_3.iteration_history, result_3.func_value_history, label="Third_try", )
-    plt.semilogy(result_4.iteration_history, result_4.func_value_history, label="Fourth_try",)
+
+
+    avg_f_values = calculate_average(result_1.func_value_history,result_2.func_value_history,result_3.func_value_history,result_4.func_value_history)
+    avg_iteration = calculate_average(result_1.iteration_history, result_2.iteration_history,result_3.iteration_history,result_4.iteration_history)
+    plt.semilogy(avg_iteration, avg_f_values, label="Average")
+
+    # plt.semilogy(result_1.iteration_history, result_1.func_value_history, label="First_try", )
+    # plt.semilogy(result_2.iteration_history, result_2.func_value_history, label="Second_try",)
+    # plt.semilogy(result_3.iteration_history, result_3.func_value_history, label="Third_try", )
+    # plt.semilogy(result_4.iteration_history, result_4.func_value_history, label="Fourth_try",)
 
     plt.xlabel('Iterations')
     plt.ylabel('f(x) values')
-    plt.title('Function_9 (same paremeters plot)')
+    # plt.title('Function_9 (same paremeters plot)')
+    plt.title('Average function_9 value')
     plt.legend()
     
+    # plt.savefig("Function_1_AVG_plots.pdf", format="pdf")
+
     # plt.savefig("Function_1_plots(1).pdf", format="pdf")
     plt.show()
     # plt.savefig("Function_9_plots.pdf", format="pdf")

@@ -218,29 +218,17 @@ import numpy as np
 # # print(evolution_1p1(f9,list_xd[0],1.0,10,100))
 # #start-point 100... / random
 
-import numpy as np
-import matplotlib.pyplot as plt
+def calculate_average(*arrays) -> list:
+    return [sum(values) / len(arrays) for values in zip(*arrays)]
 
-# Tworzymy punkty (x, y), gdzie |x - y| < 2
-x = np.linspace(-10, 10, 400)
-y = np.linspace(-10, 10, 400)
+a = [1, 2, 3, 4]
+b = [5, 10, 20, 30]
+c = [3, 1, 1, 1]
 
-# Tworzymy siatkę punktów
-X, Y = np.meshgrid(x, y)
+# Add more arrays as needed
+# d = [x, y, z, ...]
 
-# Obliczamy wartość funkcji |x - y|
-Z = np.abs(X - Y)
+# Calculate the average for each position
+final = calculate_average(a, b, c)
 
-# Tworzymy warunek, który będzie spełniony tylko dla punktów, gdzie |x - y| < 2
-condition = Z < 2
-
-# Ustawiamy wartości poza warunkiem na NaN, aby nie były rysowane
-Z[~condition] = np.nan
-
-# Rysujemy wykres
-plt.contourf(X, Y, Z, levels=[0, 2], colors='blue', alpha=0.5)
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('|x - y| < 2')
-plt.grid(True)
-plt.show()
+print(final)
