@@ -135,7 +135,7 @@ def evolution_1p1(f:callable, x0: [float], o_p:optim_params, stepsize_adaptation
 
         o_p = stepsize_adaptation(iteration, o_p)
 
-        print(f"iteration: {iteration},\tvalue: {f(x)}")
+        # print(f"iteration: {iteration},\tvalue: {f(x)}")
 
         if result.check_if_satisfied():
             break
@@ -144,32 +144,51 @@ def evolution_1p1(f:callable, x0: [float], o_p:optim_params, stepsize_adaptation
 
 
 def main() -> None:
-    x = np.random.uniform(-100.0, 100.0, (1,10))
+    x = np.random.uniform(100.0, 100.0, (1,10))
 
-    my_optim_params_DEFAULT = optim_params(5, 1.0, 2000,0.0,1.0)
+    my_optim_params_DEFAULT = optim_params(5, 1.0, 5000,0.0,1.0)
 
     my_optim_params_1 = copy.copy(my_optim_params_DEFAULT)
     my_optim_params_2 = copy.copy(my_optim_params_DEFAULT)
     my_optim_params_3 =  copy.copy(my_optim_params_DEFAULT)
     my_optim_params_4 =  copy.copy(my_optim_params_DEFAULT)
 
-    result_1 = evolution_1p1(f1,x,my_optim_params_1,stepsize_adaptation)
-    result_2 = evolution_1p1(f1,x,my_optim_params_2,stepsize_adaptation)
-    result_3 = evolution_1p1(f1,x,my_optim_params_3,stepsize_adaptation)
-    result_4 = evolution_1p1(f1,x,my_optim_params_4,stepsize_adaptation)
+# #FUNCTION_1
+    # result_1 = evolution_1p1(f1,x,my_optim_params_1,stepsize_adaptation)
+    # result_2 = evolution_1p1(f1,x,my_optim_params_2,stepsize_adaptation)
+    # result_3 = evolution_1p1(f1,x,my_optim_params_3,stepsize_adaptation)
+    # result_4 = evolution_1p1(f1,x,my_optim_params_4,stepsize_adaptation)
+    # print(result_1,result_2,result_3, result_4)
+    
+    # plt.scatter(result_1.iteration_history, result_1.func_value_history, label="First_try", s=10)
+    # plt.scatter(result_2.iteration_history, result_2.func_value_history, label="Second_try", s=10)
+    # plt.scatter(result_3.iteration_history, result_3.func_value_history, label="Third_try", s=10)
+    # plt.scatter(result_4.iteration_history, result_4.func_value_history, label="Fourth_try", s=10)
 
-    plt.scatter(result_1.iteration_history, result_1.func_value_history, label="First_try", s=10)
-    plt.scatter(result_2.iteration_history, result_2.func_value_history, label="Second_try", s=10)
-    plt.scatter(result_3.iteration_history, result_3.func_value_history, label="Third_try", s=10)
-    plt.scatter(result_4.iteration_history, result_4.func_value_history, label="Third_try", s=10)
+# #FUNCTION_9
+    result_1 = evolution_1p1(f9,x,my_optim_params_1,stepsize_adaptation)
+    result_2 = evolution_1p1(f9,x,my_optim_params_2,stepsize_adaptation)
+    result_3 = evolution_1p1(f9,x,my_optim_params_3,stepsize_adaptation)
+    result_4 = evolution_1p1(f9,x,my_optim_params_4,stepsize_adaptation)
+    print(result_1,result_2,result_3, result_4)
+
+    plt.semilogy(result_1.iteration_history, result_1.func_value_history, label="First_try", )
+    plt.semilogy(result_2.iteration_history, result_2.func_value_history, label="Second_try",)
+    plt.semilogy(result_3.iteration_history, result_3.func_value_history, label="Third_try", )
+    plt.semilogy(result_4.iteration_history, result_4.func_value_history, label="Fourth_try",)
 
     plt.xlabel('Iterations')
     plt.ylabel('f(x) values')
-    plt.title('Function_1 (same paremeters plot)')
+    plt.title('Function_9 (same paremeters plot)')
     plt.legend()
     
-    plt.savefig("Function_1_plots.pdf", format="pdf")
+    # plt.savefig("Function_1_plots(1).pdf", format="pdf")
+    plt.show()
+    # plt.savefig("Function_9_plots.pdf", format="pdf")
 
+
+
+#wykres AVG
 
 if __name__ =="__main__":
     main()
