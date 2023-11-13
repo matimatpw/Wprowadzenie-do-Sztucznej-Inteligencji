@@ -218,7 +218,29 @@ import numpy as np
 # # print(evolution_1p1(f9,list_xd[0],1.0,10,100))
 # #start-point 100... / random
 
-# print(xd.shape)
+import numpy as np
+import matplotlib.pyplot as plt
 
-xd = [1,2,3,4,5]
-print(xd[-4])
+# Tworzymy punkty (x, y), gdzie |x - y| < 2
+x = np.linspace(-10, 10, 400)
+y = np.linspace(-10, 10, 400)
+
+# Tworzymy siatkę punktów
+X, Y = np.meshgrid(x, y)
+
+# Obliczamy wartość funkcji |x - y|
+Z = np.abs(X - Y)
+
+# Tworzymy warunek, który będzie spełniony tylko dla punktów, gdzie |x - y| < 2
+condition = Z < 2
+
+# Ustawiamy wartości poza warunkiem na NaN, aby nie były rysowane
+Z[~condition] = np.nan
+
+# Rysujemy wykres
+plt.contourf(X, Y, Z, levels=[0, 2], colors='blue', alpha=0.5)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('|x - y| < 2')
+plt.grid(True)
+plt.show()
