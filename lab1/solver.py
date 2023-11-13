@@ -1,7 +1,7 @@
 from autograd import grad
 import numpy as np
 from functools import partial
-
+from cec2017.functions import f1, f9
 
 class optim_result:
     def __init__(self, beta: float) -> None:
@@ -128,13 +128,23 @@ def solver(
 
     return my_result
 
+def comparision():
+
+    my_max_iter = 5000  # iteration limit
+    my_toll = 0.0001  # stopper ( Elipse value )
+    array = np.random.uniform(-100.0, 100.0, (1,10))
+
+    parameters = optim_params(0.1, my_max_iter, my_toll)
+    output = solver(f9, array, parameters, False)
+    print(output)
+
 
 def main():
     objective_function_alfa = partial(objective_function, alpha=1)
 
-    my_max_iter = 1000  # iteration limit
+    my_max_iter = 5000  # iteration limit
     my_toll = 0.0001  # stopper ( Elipse value )
-    array = np.random.uniform(-100.0, 100.0, size=10)
+    array = np.random.uniform(100.0, 100.0, size=10)
     print(array)
 
     parameters = optim_params(0.1, my_max_iter, my_toll)
@@ -144,4 +154,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    comparision()

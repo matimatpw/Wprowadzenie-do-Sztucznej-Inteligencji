@@ -51,13 +51,13 @@ class optim_result:
         return f"{exit_info}{last_x_info}{min_f_info}{iteration_info}"
 
 class optim_params:
-    def __init__(self, cr:int, ss:float, mi:int,mm:float, md:float, check_val = 0.2, step_up = 1.22, step_down = 0.22, succes=0) -> None:
-        self.my_control_rate = cr
-        self.my_step_size = ss
-        self.my_max_iterations = mi
-        self.my_mean = mm
-        self.my_deviation = md
-
+    def __init__(self, control_rate:int, step_size:float, max_iter:int,mean_val:float, deviation_val:float, check_val = 0.2, step_up = 1.22, step_down = 0.22, succes=0) -> None:
+        self.my_control_rate = control_rate
+        self.my_step_size = step_size
+        self.my_max_iterations = max_iter
+        self.my_mean = mean_val
+        self.my_deviation = deviation_val
+        
         self.my_success = succes
         self.my_check_value = check_val
         self.my_step_up = step_up
@@ -146,6 +146,20 @@ def evolution_1p1(f:callable, x0: [float], o_p:optim_params, stepsize_adaptation
 def calculate_average(*arrays) -> list:
     return [sum(values) / len(arrays) for values in zip(*arrays)]
 
+
+def comparision():
+    x = np.random.uniform(100.0, 100.0, (1,10))
+    control_rate= 5
+    stepsize    = 1.0
+    maxiter     = 5000
+    mean        = 0.0
+    deviation   = 1.0
+    my_optim_params_DEFAULT = optim_params(5, 1.0, 5000,0.0,1.0)
+
+    result = evolution_1p1(f9,x,my_optim_params_DEFAULT,stepsize_adaptation)
+    print(result)
+
+
 def main() -> None:
     x = np.random.uniform(100.0, 100.0, (1,10))
 
@@ -203,7 +217,8 @@ def main() -> None:
 #wykres AVG
 
 if __name__ =="__main__":
-    main()
+    # main()
+    comparision()
 
 
 
