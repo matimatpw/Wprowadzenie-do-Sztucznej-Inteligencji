@@ -1,7 +1,9 @@
 from autograd import grad
 import numpy as np
 from functools import partial
-from cec2017.functions import f1, f9
+from cec2017.functions import f1, f9, f2
+import numdifftools as nd
+
 
 class optim_result:
     def __init__(self, beta: float) -> None:
@@ -101,6 +103,7 @@ def solver(
     my_result = optim_result(params.learn_rate)
 
     gradient = grad(func)
+    # gradient = nd.Gradient(func,0.1)
 
     learn_rate = params.learn_rate
     iter_info = params.max_iter
@@ -135,7 +138,7 @@ def comparision():
     array = np.random.uniform(-100.0, 100.0, (1,10))
 
     parameters = optim_params(0.1, my_max_iter, my_toll)
-    output = solver(f9, array, parameters, False)
+    output = solver(f2, array, parameters, False)
     print(output)
 
 

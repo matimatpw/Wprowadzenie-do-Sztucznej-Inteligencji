@@ -1,1 +1,5 @@
-np.random.uniform(100.0, 100.0) * random.normalvariate(0.,1.)
+    result_1 = evolution_1p1(f9,x,my_optim_params_1,stepsize_adaptation)
+    result_2 = evolution_1p1(f9,x,my_optim_params_2,stepsize_adaptation)
+    result_3 = evolution_1p1(f9,x,my_optim_params_3,stepsize_adaptation)
+    result_4 = evolution_1p1(f9,x,my_optim_params_4,stepsize_adaptation)
+    print(result_1,result_2,result_3, result_4)
