@@ -3,7 +3,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from cec2017_test import F1, f1, f9
 from cec2017.functions import f2
+
 import copy
+import statistics
 
 #odpalic pare razy algorytm na tych samych danych poczatkowych
 class optim_result:
@@ -58,7 +60,7 @@ class optim_params:
         self.my_max_iterations = max_iter
         self.my_mean = mean_val
         self.my_deviation = deviation_val
-
+        
         self.my_success = succes
         self.my_check_value = check_val
         self.my_step_up = step_up
@@ -130,7 +132,7 @@ def evolution_1p1(f:callable, x0: [float], o_p:optim_params, stepsize_adaptation
         my_y *= o_p.step_size
         y = x + my_y
 
-        if f(y) <= f(x):
+        if f(y) <= f(x): 
             o_p.set_success(o_p.success +1)
             x = y
 
@@ -145,7 +147,12 @@ def evolution_1p1(f:callable, x0: [float], o_p:optim_params, stepsize_adaptation
 
 
 def calculate_average(*arrays) -> list:
-    return [sum(values) / len(arrays) for values in zip(*arrays)]
+    return [statistics.mean(values) for values in zip(*arrays)]
+
+def calculate_median(*arrays) -> list:
+    return [statistics.median(values) for values in zip(*arrays)]
+
+
 
 
 def comparision():
@@ -155,7 +162,7 @@ def comparision():
     maxiter     = 5000
     mean        = 0.0
     deviation   = 1.0
-    my_optim_params_DEFAULT = optim_params(5, 1.0, 5000,0.0,deviation)
+    my_optim_params_DEFAULT = optim_params(5, 1.0, 5000,0.0,1.0)
 
     result = evolution_1p1(f2,x,my_optim_params_DEFAULT,stepsize_adaptation)
     print(result)
@@ -172,41 +179,45 @@ def main() -> None:
     my_optim_params_4 =  copy.copy(my_optim_params_DEFAULT)
 
 # #FUNCTION_1
-    # result_1 = evolution_1p1(f1,x,my_optim_params_1,stepsize_adaptation)
-    # result_2 = evolution_1p1(f1,x,my_optim_params_2,stepsize_adaptation)
-    # result_3 = evolution_1p1(f1,x,my_optim_params_3,stepsize_adaptation)
-    # result_4 = evolution_1p1(f1,x,my_optim_params_4,stepsize_adaptation)
-    # print(result_1,result_2,result_3, result_4)
-
+    result_1 = evolution_1p1(f1,x,my_optim_params_1,stepsize_adaptation)
+    result_2 = evolution_1p1(f1,x,my_optim_params_2,stepsize_adaptation)
+    result_3 = evolution_1p1(f1,x,my_optim_params_3,stepsize_adaptation)
+    result_4 = evolution_1p1(f1,x,my_optim_params_4,stepsize_adaptation)
+    print(result_1,result_2,result_3, result_4)
+    
     # plt.scatter(result_1.iteration_history, result_1.func_value_history, label="First_try", s=10)
     # plt.scatter(result_2.iteration_history, result_2.func_value_history, label="Second_try", s=10)
     # plt.scatter(result_3.iteration_history, result_3.func_value_history, label="Third_try", s=10)
     # plt.scatter(result_4.iteration_history, result_4.func_value_history, label="Fourth_try", s=10)
 
 # #FUNCTION_9
-    result_1 = evolution_1p1(f9,x,my_optim_params_1,stepsize_adaptation)
-    result_2 = evolution_1p1(f9,x,my_optim_params_2,stepsize_adaptation)
-    result_3 = evolution_1p1(f9,x,my_optim_params_3,stepsize_adaptation)
-    result_4 = evolution_1p1(f9,x,my_optim_params_4,stepsize_adaptation)
-    print(result_1,result_2,result_3, result_4)
+    # result_1 = evolution_1p1(f9,x,my_optim_params_1,stepsize_adaptation)
+    # result_2 = evolution_1p1(f9,x,my_optim_params_2,stepsize_adaptation)
+    # result_3 = evolution_1p1(f9,x,my_optim_params_3,stepsize_adaptation)
+    # result_4 = evolution_1p1(f9,x,my_optim_params_4,stepsize_adaptation)
+    # print(result_1,result_2,result_3, result_4)
 
 
 
-    avg_f_values = calculate_average(result_1.func_value_history,result_2.func_value_history,result_3.func_value_history,result_4.func_value_history)
-    avg_iteration = calculate_average(result_1.iteration_history, result_2.iteration_history,result_3.iteration_history,result_4.iteration_history)
-    # plt.semilogx(avg_iteration, avg_f_values, label="Average")
+    # avg_f_values = calculate_average(result_1.func_value_history,result_2.func_value_history,result_3.func_value_history,result_4.func_value_history)
+    # avg_iteration = calculate_average(result_1.iteration_history, result_2.iteration_history,result_3.iteration_history,result_4.iteration_history)
+    # plt.semilogy(avg_iteration, avg_f_values, label="Average")
 
-    plt.semilogy(result_1.iteration_history, result_1.func_value_history, label="First_try", )
-    plt.semilogy(result_2.iteration_history, result_2.func_value_history, label="Second_try",)
-    plt.semilogy(result_3.iteration_history, result_3.func_value_history, label="Third_try", )
-    plt.semilogy(result_4.iteration_history, result_4.func_value_history, label="Fourth_try",)
+    median_f_values = calculate_median(result_1.func_value_history,result_2.func_value_history,result_3.func_value_history,result_4.func_value_history)
+    median_iteration = calculate_median(result_1.iteration_history, result_2.iteration_history,result_3.iteration_history,result_4.iteration_history)
+    plt.semilogy(median_iteration, median_f_values, label="Median")
+
+    # plt.semilogy(result_1.iteration_history, result_1.func_value_history, label="First_try", )
+    # plt.semilogy(result_2.iteration_history, result_2.func_value_history, label="Second_try",)
+    # plt.semilogy(result_3.iteration_history, result_3.func_value_history, label="Third_try", )
+    # plt.semilogy(result_4.iteration_history, result_4.func_value_history, label="Fourth_try",)
 
     plt.xlabel('Iterations')
     plt.ylabel('f(x) values')
     # plt.title('Function_9 (same paremeters plot)')
-    plt.title('function_1 values')
+    plt.title('Median function_1 value')
     plt.legend()
-
+    
     # plt.savefig("Function_1_AVG_plots.pdf", format="pdf")
 
     # plt.savefig("Function_1_plots(1).pdf", format="pdf")
@@ -218,8 +229,8 @@ def main() -> None:
 #wykres AVG
 
 if __name__ =="__main__":
-    # main()
-    comparision()
+    main()
+    # comparision()
 
 
 
