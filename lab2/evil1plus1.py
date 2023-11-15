@@ -244,8 +244,6 @@ def main() -> None:
     # plt.savefig("Function_9_plots.pdf", format="pdf")
 
 
-# wykres AVG
-
 if __name__ == "__main__":
     main()
     # comparision()
