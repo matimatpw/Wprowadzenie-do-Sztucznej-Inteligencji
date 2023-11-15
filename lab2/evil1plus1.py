@@ -19,15 +19,15 @@ class optim_result:
 
 
     @property
-    def iteration_history(self) -> None:
+    def iteration_history(self) -> list:
         return self.my_iteration_history
 
     @property
-    def func_value_history(self) -> None:
+    def func_value_history(self) -> list:
         return self.my_f_value_history
 
     @property
-    def last_x(self) -> None:
+    def last_x(self) -> [float]:
         return self.my_last_x
 
     def set_last_x(self,last_x:np.ndarray) -> None:
@@ -41,7 +41,7 @@ class optim_result:
 
     def check_if_satisfied(self,start_check_val=500,elements=100)-> bool:
         last_n_elements = self.func_value_history[(-elements):]
-        if len(set(last_n_elements)) == 1 and len(self.func_value_history) > start_check_val :
+        if len(set(last_n_elements)) == 1 and len(self.func_value_history) > start_check_val:
             self.exit_info = f"\nValue is the same for the last >{elements}< iterations"
             return True
         return False
@@ -67,40 +67,40 @@ class optim_params:
         self.my_step_down = step_down
 
     @property
-    def control_rate(self) -> None:
+    def control_rate(self) -> int:
         return self.my_control_rate
 
     @property
-    def success(self) -> None:
+    def success(self) -> float:
         return self.my_success
 
     @property
-    def step_size(self) -> None:
+    def step_size(self) -> float:
         return self.my_step_size
 
     @property
-    def max_iter(self) -> None:
+    def max_iter(self) -> int:
         return self.my_max_iterations
 
     @property
-    def deviation(self) -> None:
+    def deviation(self) -> float:
         return self.my_deviation
 
     @property
-    def mean(self) -> None:
+    def mean(self) -> float:
         return self.my_mean
 
 
     @property
-    def check_value(self) -> None:
+    def check_value(self) -> float:
         return self.my_check_value
 
     @property
-    def step_up(self) -> None:
+    def step_up(self) -> float:
         return self.my_step_up
 
     @property
-    def step_down(self) -> None:
+    def step_down(self) -> float:
         return self.my_step_down
 
     def set_stepsize(self, new_step:float)-> None:
@@ -162,7 +162,7 @@ def comparision():
     maxiter     = 5000
     mean        = 0.0
     deviation   = 1.0
-    my_optim_params_DEFAULT = optim_params(5, 1.0, 5000,0.0,1.0)
+    my_optim_params_DEFAULT = optim_params(control_rate, stepsize, maxiter,mean,deviation)
 
     result = evolution_1p1(f2,x,my_optim_params_DEFAULT,stepsize_adaptation)
     print(result)
@@ -179,11 +179,11 @@ def main() -> None:
     my_optim_params_4 =  copy.copy(my_optim_params_DEFAULT)
 
 # #FUNCTION_1
-    result_1 = evolution_1p1(f1,x,my_optim_params_1,stepsize_adaptation)
-    result_2 = evolution_1p1(f1,x,my_optim_params_2,stepsize_adaptation)
-    result_3 = evolution_1p1(f1,x,my_optim_params_3,stepsize_adaptation)
-    result_4 = evolution_1p1(f1,x,my_optim_params_4,stepsize_adaptation)
-    print(result_1,result_2,result_3, result_4)
+    # result_1 = evolution_1p1(f1,x,my_optim_params_1,stepsize_adaptation)
+    # result_2 = evolution_1p1(f1,x,my_optim_params_2,stepsize_adaptation)
+    # result_3 = evolution_1p1(f1,x,my_optim_params_3,stepsize_adaptation)
+    # result_4 = evolution_1p1(f1,x,my_optim_params_4,stepsize_adaptation)
+    # print(result_1,result_2,result_3, result_4)
     
     # plt.scatter(result_1.iteration_history, result_1.func_value_history, label="First_try", s=10)
     # plt.scatter(result_2.iteration_history, result_2.func_value_history, label="Second_try", s=10)
@@ -191,11 +191,11 @@ def main() -> None:
     # plt.scatter(result_4.iteration_history, result_4.func_value_history, label="Fourth_try", s=10)
 
 # #FUNCTION_9
-    # result_1 = evolution_1p1(f9,x,my_optim_params_1,stepsize_adaptation)
-    # result_2 = evolution_1p1(f9,x,my_optim_params_2,stepsize_adaptation)
-    # result_3 = evolution_1p1(f9,x,my_optim_params_3,stepsize_adaptation)
-    # result_4 = evolution_1p1(f9,x,my_optim_params_4,stepsize_adaptation)
-    # print(result_1,result_2,result_3, result_4)
+    result_1 = evolution_1p1(f9,x,my_optim_params_1,stepsize_adaptation)
+    result_2 = evolution_1p1(f9,x,my_optim_params_2,stepsize_adaptation)
+    result_3 = evolution_1p1(f9,x,my_optim_params_3,stepsize_adaptation)
+    result_4 = evolution_1p1(f9,x,my_optim_params_4,stepsize_adaptation)
+    print(result_1,result_2,result_3, result_4)
 
 
 
@@ -215,7 +215,7 @@ def main() -> None:
     plt.xlabel('Iterations')
     plt.ylabel('f(x) values')
     # plt.title('Function_9 (same paremeters plot)')
-    plt.title('Median function_1 value')
+    plt.title('Median function_9 value')
     plt.legend()
     
     # plt.savefig("Function_1_AVG_plots.pdf", format="pdf")
