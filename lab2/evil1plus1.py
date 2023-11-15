@@ -1,8 +1,8 @@
 import random
 import numpy as np
 from matplotlib import pyplot as plt
-from cec2017_test import F1, f1, f9
-from cec2017.functions import f2
+
+from cec2017.functions import f2, f1 ,f9
 
 import copy
 import statistics
