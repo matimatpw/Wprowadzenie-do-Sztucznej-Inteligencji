@@ -3,7 +3,6 @@
 class Player:
     def __init__(self, symbol:str) -> None:
         self.symbol = symbol.upper()
-        pass
 
     def make_move(self):
         """
