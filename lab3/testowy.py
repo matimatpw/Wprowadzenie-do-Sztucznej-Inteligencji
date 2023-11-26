@@ -45,15 +45,15 @@ class Game:
         self.players = {'X': player_X, 'O': player_O}
 
     def play(self):
-        current_player = 'X'
+        current_player = self.players["X"]
         iters = 0
         while not self.state.is_terminal():
             iters += 1
             self.state.display()
             print()
-            action = self.players[current_player].get_action(self.state)
-            self.state = result(self.state, action, current_player)
-            current_player = 'O' if current_player == 'X' else 'X'
+            action = get_action(current_player.symbol, self.state)
+            self.state = result(self.state, action, current_player.symbol)
+            current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
 
         self.state.display()
         print(iters)
@@ -69,49 +69,49 @@ def actions(state):
     # Return a list of possible moves
     return [(i, j) for i in range(3) for j in range(3) if state.board[i][j] == ' ']
 
-def result(state, action, player):
+def result(state, action, player_symbol):
     # Return a new state after a player makes a move
     new_board = [row.copy() for row in state.board]
-    new_board[action[0]][action[1]] = player
+    new_board[action[0]][action[1]] = player_symbol
     return State(new_board)
 
-class MinMaxPlayer(Player):
-    def get_action(self, state):
-        _, action = self.minimax(state, self.symbol)
-        return action
 
-    def minimax(self, state, player):
-        if state.is_terminal():
-            return state.utility(), None
+def get_action(player_symbol, state):
+    _, action = minimax(state, player_symbol)
+    return action
 
-        if player == 'X':
-            max_utility = float('-inf')
-            best_action = None
-            how_fast = 0
-            for action in actions(state):
-                how_fast += 1
-                result_state = result(state, action, player)
-                utility, _ = self.minimax(result_state, 'O')
-                if utility >= max_utility:
-                    max_utility = utility
-                    best_action = action
-            return max_utility, best_action
-        else:
-            min_utility = float('inf')
-            best_action = None
-            how_fast = 0
-            for action in actions(state):
-                how_fast +=1
-                result_state = result(state, action, player)
-                utility, _ = self.minimax(result_state, 'X')
-                if utility <= min_utility:
-                    min_utility = utility
-                    best_action = action
-            return min_utility, best_action
+def minimax(state, player):
+    if state.is_terminal():
+        return state.utility(), None
+
+    if player == 'X':
+        max_utility = float('-inf')
+        best_action = None
+        how_fast = 0
+        for action in actions(state):
+            how_fast += 1
+            result_state = result(state, action, player)
+            utility, _ = minimax(result_state, 'O')
+            if utility >= max_utility:
+                max_utility = utility
+                best_action = action
+        return max_utility, best_action
+    else:
+        min_utility = float('inf')
+        best_action = None
+        how_fast = 0
+        for action in actions(state):
+            how_fast +=1
+            result_state = result(state, action, player)
+            utility, _ = minimax(result_state, 'X')
+            if utility <= min_utility:
+                min_utility = utility
+                best_action = action
+        return min_utility, best_action
 
 if __name__ == "__main__":
-    player_X = MinMaxPlayer('X')
-    player_O = MinMaxPlayer('O')
+    player_X = Player('X')
+    player_O = Player('O')
 
     game = Game(player_X, player_O)
     # game.state.board[0][1] = "O"
