@@ -26,19 +26,19 @@ class State:
         empty_count = line.count(' ')
 
         if(max_count == 3):
-            return 100
+            return 1
         elif(min_count == 3):
-            return -100
+            return -1
         
         if (max_count == 2 and empty_count == 1):
-            return 10
-        if (min_count == 2 and empty_count == 1):
-            return -10
-
-        if (max_count == 1 and empty_count == 2):
             return 1
-        if (min_count == 1 and empty_count == 2):
+        if (min_count == 2 and empty_count == 1):
             return -1
+
+        # if (max_count == 1 and empty_count == 2):
+        #     return 1
+        # if (min_count == 1 and empty_count == 2):
+        #     return -1
 
         return 0
         
