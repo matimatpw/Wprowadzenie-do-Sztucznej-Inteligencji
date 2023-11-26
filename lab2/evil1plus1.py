@@ -175,7 +175,7 @@ def comparision():
         control_rate, stepsize, maxiter, mean, deviation
     )
 
-    result = evolution_1p1(f2, x, my_optim_params_DEFAULT, stepsize_adaptation)
+    result = evolution_1p1(f1, x, my_optim_params_DEFAULT, stepsize_adaptation)
     print(result)
 
 
@@ -245,5 +245,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
-    # comparision()
+    # main()
+    comparision()
