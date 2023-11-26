@@ -1,3 +1,10 @@
+from enum import Enum
+
+class Reward(Enum):
+    X_WIN = 1
+    Y_WIN = -1
+    DRAW  = 0
+
 class Player:
     def __init__(self, symbol):
         self.symbol = symbol
@@ -5,6 +12,9 @@ class Player:
 class State:
     def __init__(self, board):
         self.board = board
+
+    def evaluate_func(sefl):
+        ...
 
     def is_terminal(self):
         # Check if the game is over (either someone wins or it's a draw)
@@ -14,17 +24,29 @@ class State:
         # Calculate the utility of the state (1 - win, 0 - draw, -1 - loss)
         for row in self.board:
             if row[0] == row[1] == row[2] and row[0] != ' ':
-                return 1 if row[0] == 'X' else -1
+                if( row[0] == 'X'):
+                    return 1
+                return -1
+                # return 1 if row[0] == 'X' else -1
 
         for col in range(3):
             if self.board[0][col] == self.board[1][col] == self.board[2][col] and self.board[0][col] != ' ':
-                return 1 if self.board[0][col] == 'X' else -1
+                if (self.board[0][col] == 'X'):
+                    return 1
+                return -1
+                # return 1 if self.board[0][col] == 'X' else -1
         #diagonally
         if self.board[0][0] == self.board[1][1] == self.board[2][2] and self.board[0][0] != ' ':
-            return 1 if self.board[0][0] == 'X' else -1
+            if (self.board[0][0] == 'X'):
+                return 1
+            return -1
+            # return 1 if self.board[0][0] == 'X' else -1
 
         if self.board[0][2] == self.board[1][1] == self.board[2][0] and self.board[0][2] != ' ':
-            return 1 if self.board[0][2] == 'X' else -1
+            if (self.board[0][2] == 'X'):
+                return 1
+            return -1
+            # return 1 if self.board[0][2] == 'X' else -1
 
         #full board -> draw
         if(' ' not in [cell for row in self.board for cell in row]):
@@ -40,9 +62,10 @@ class State:
             print("-----")
 
 class Game:
-    def __init__(self, player_X, player_O):
+    def __init__(self, player_X, player_O, my_depth=9):
         self.state = State([[' ' for _ in range(3)] for _ in range(3)])  # Initial game state
         self.players = {'X': player_X, 'O': player_O}
+        self.depth = my_depth
 
     def play(self):
         current_player = self.players["X"]
@@ -51,7 +74,7 @@ class Game:
             iters += 1
             self.state.display()
             print()
-            action = get_action(current_player.symbol, self.state)
+            action = get_action(current_player.symbol, self.state, self.depth)
             self.state = result(self.state, action, current_player.symbol)
             current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
 
@@ -76,12 +99,14 @@ def result(state, action, player_symbol):
     return State(new_board)
 
 
-def get_action(player_symbol, state):
-    _, action = minimax(state, player_symbol)
+def get_action(player_symbol, state, my_depth):
+    _, action = minimax(state, player_symbol, my_depth)
     return action
 
-def minimax(state, player):
-    if state.is_terminal():
+#TODO alpfa beta pruning | evaluate function | enumerate zastosowac
+
+def minimax(state, player, depth):
+    if state.is_terminal() or depth == 0:
         return state.utility(), None
 
     if player == 'X':
@@ -91,8 +116,8 @@ def minimax(state, player):
         for action in actions(state):
             how_fast += 1
             result_state = result(state, action, player)
-            utility, _ = minimax(result_state, 'O')
-            if utility >= max_utility:
+            utility, _ = minimax(result_state, 'O', depth - 1)
+            if utility > max_utility:
                 max_utility = utility
                 best_action = action
         return max_utility, best_action
@@ -103,8 +128,8 @@ def minimax(state, player):
         for action in actions(state):
             how_fast +=1
             result_state = result(state, action, player)
-            utility, _ = minimax(result_state, 'X')
-            if utility <= min_utility:
+            utility, _ = minimax(result_state, 'X', depth - 1)
+            if utility < min_utility:
                 min_utility = utility
                 best_action = action
         return min_utility, best_action
