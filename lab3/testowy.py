@@ -12,48 +12,67 @@ class Player:
 class State:
     def __init__(self, board):
         self.board = board
+        self.lines = self.get_lines()
 
-    def evaluate_func(sefl):
-        ...
+    def get_lines(self):
+        return [
+        [self.board[0][0], self.board[0][1], self.board[0][2]],
+        [self.board[1][0], self.board[1][1], self.board[1][2]],
+        [self.board[2][0], self.board[2][1], self.board[2][2]],
+        [self.board[0][0], self.board[1][0], self.board[2][0]],
+        [self.board[0][1], self.board[1][1], self.board[2][1]],
+        [self.board[0][2], self.board[1][2], self.board[2][2]],
+        [self.board[0][0], self.board[1][1], self.board[2][2]],
+        [self.board[0][2], self.board[1][1], self.board[2][0]] 
+        ]
+
+    def evaluate_line(self, line:list):
+        max_count = line.count('X')
+        min_count = line.count('O')
+        empty_count = line.count(' ')
+
+        if(max_count == 3):
+            return 100
+        elif(min_count == 3):
+            return -100
+        
+        if (max_count == 2 and empty_count == 1):
+            return 10
+        if (min_count == 2 and empty_count == 1):
+            return -10
+        
+        if (max_count == 1 and empty_count == 2):
+            return 1
+        if (min_count == 1 and empty_count == 2):
+            return -1
+
+        return 0
+        
+
+
+    def evaluate_func(self):
+        board_evaluation = 0
+
+        for line in self.lines:
+            board_evaluation += self.evaluate_line(line)
+        
+        return board_evaluation
+
+    def check_if_win(self):
+        for line in self.lines:
+            if(line.count('X') == 3):
+                return 'X'
+            if(line.count('O') == 3):
+                return 'O'
+        return None
 
     def is_terminal(self):
         # Check if the game is over (either someone wins or it's a draw)
-        return (self.utility() != 0) or ' ' not in [cell for row in self.board for cell in row]
+        return (self.check_if_win()) or ' ' not in [cell for row in self.board for cell in row]
+
 
     def utility(self):
-        # Calculate the utility of the state (1 - win, 0 - draw, -1 - loss)
-        for row in self.board:
-            if row[0] == row[1] == row[2] and row[0] != ' ':
-                if( row[0] == 'X'):
-                    return 1
-                return -1
-                # return 1 if row[0] == 'X' else -1
-
-        for col in range(3):
-            if self.board[0][col] == self.board[1][col] == self.board[2][col] and self.board[0][col] != ' ':
-                if (self.board[0][col] == 'X'):
-                    return 1
-                return -1
-                # return 1 if self.board[0][col] == 'X' else -1
-        #diagonally
-        if self.board[0][0] == self.board[1][1] == self.board[2][2] and self.board[0][0] != ' ':
-            if (self.board[0][0] == 'X'):
-                return 1
-            return -1
-            # return 1 if self.board[0][0] == 'X' else -1
-
-        if self.board[0][2] == self.board[1][1] == self.board[2][0] and self.board[0][2] != ' ':
-            if (self.board[0][2] == 'X'):
-                return 1
-            return -1
-            # return 1 if self.board[0][2] == 'X' else -1
-
-        #full board -> draw
-        if(' ' not in [cell for row in self.board for cell in row]):
-            return 0
-
-        #heurystyka !!!
-        return 0
+        pass
 
     def display(self):
         # Display the current state of the game
@@ -62,29 +81,33 @@ class State:
             print("-----")
 
 class Game:
-    def __init__(self, player_X, player_O, my_depth=9):
+    def __init__(self, player_X, player_O, my_depth=10):
         self.state = State([[' ' for _ in range(3)] for _ in range(3)])  # Initial game state
         self.players = {'X': player_X, 'O': player_O}
         self.depth = my_depth
 
     def play(self):
-        current_player = self.players["X"]
-        iters = 0
+        # current_player = self.players["X"]
+        current_player = self.players["O"]
+        iters = 1
+
+        print(f"depth= {self.depth}")
+        print(f"###_ {iters} _###")
         while not self.state.is_terminal():
             iters += 1
             self.state.display()
-            print()
+            print(f"###_ {iters} _###")
             action = get_action(current_player.symbol, self.state, self.depth)
             self.state = result(self.state, action, current_player.symbol)
             current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
 
         self.state.display()
         print(iters)
-        winner = self.state.utility()
-        if winner == 1:
-            print("Player X wins!")
-        elif winner == -1:
-            print("Player O wins!")
+        winner = self.state.check_if_win()
+        if winner == 'X':
+            print("Player MAX 'X' wins!")
+        elif winner == 'O':
+            print("Player MIN 'O' wins!")
         else:
             print("It's a draw!")
 
@@ -105,16 +128,14 @@ def get_action(player_symbol, state, my_depth):
 
 #TODO alpfa beta pruning | evaluate function | enumerate zastosowac
 
-def minimax(state, player, depth):
+def minimax(state:State, player, depth):
     if state.is_terminal() or depth == 0:
-        return state.utility(), None
+        return state.evaluate_func(), None
 
     if player == 'X':
         max_utility = float('-inf')
         best_action = None
-        how_fast = 0
         for action in actions(state):
-            how_fast += 1
             result_state = result(state, action, player)
             utility, _ = minimax(result_state, 'O', depth - 1)
             if utility > max_utility:
@@ -124,9 +145,7 @@ def minimax(state, player, depth):
     else:
         min_utility = float('inf')
         best_action = None
-        how_fast = 0
         for action in actions(state):
-            how_fast +=1
             result_state = result(state, action, player)
             utility, _ = minimax(result_state, 'X', depth - 1)
             if utility < min_utility:
@@ -138,8 +157,11 @@ if __name__ == "__main__":
     player_X = Player('X')
     player_O = Player('O')
 
-    game = Game(player_X, player_O)
-    # game.state.board[0][1] = "O"
-    # game.state.board[0][0] = "O"
+    game = Game(player_X, player_O,10)
+
+    # Start move center #
+    game.state.board[1][1] = "X"
+    game.state.board[0][0] = "X"
+    game.state.board[0][1] = "O"
 
     game.play()
