@@ -17,7 +17,7 @@ class State:
         [self.board[0][1], self.board[1][1], self.board[2][1]],
         [self.board[0][2], self.board[1][2], self.board[2][2]],
         [self.board[0][0], self.board[1][1], self.board[2][2]],
-        [self.board[0][2], self.board[1][1], self.board[2][0]] 
+        [self.board[0][2], self.board[1][1], self.board[2][0]]
         ]
 
     def evaluate_line(self, line:list):
@@ -26,22 +26,22 @@ class State:
         empty_count = line.count(' ')
 
         if(max_count == 3):
-            return 1
+            return 100
         elif(min_count == 3):
-            return -1
-        
+            return -100
+
         if (max_count == 2 and empty_count == 1):
-            return 1
+            return 20
         if (min_count == 2 and empty_count == 1):
-            return -1
+            return -20
 
         # if (max_count == 1 and empty_count == 2):
-        #     return 1
+        #     return 20
         # if (min_count == 1 and empty_count == 2):
-        #     return -1
+        #     return -20
 
         return 0
-        
+
 
 
     def evaluate_func(self):
@@ -49,7 +49,7 @@ class State:
 
         for line in self.lines:
             board_evaluation += self.evaluate_line(line)
-        
+
         return board_evaluation
 
     def check_if_win(self):
@@ -85,7 +85,7 @@ class Game:
                 iters += 1
                 self.state.display()
                 print(f"###_ {iters} _###")
-                next_move = get_action(current_player.symbol, self.state, 1)
+                next_move = get_action(current_player.symbol, self.state, 10)
                 self.state = new_board_state(self.state, next_move, current_player.symbol)
                 current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
                 # self.state.display()
@@ -101,7 +101,7 @@ class Game:
             iters += 1
             self.state.display()
             print(f"###_ {iters} _###")
-            next_move = get_action(current_player.symbol, self.state, self.depth)
+            next_move = get_action(current_player.symbol, self.state, 2)
             self.state = new_board_state(self.state, next_move, current_player.symbol)
             current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
 
@@ -129,7 +129,7 @@ def get_action(player_symbol, state, my_depth):
     _, best_move = minimax(state, player_symbol, my_depth)
     return best_move
 
-#TODO alpfa beta pruning 
+#TODO alpfa beta pruning
 
 def minimax(state:State, player_symbol, depth):
     if state.is_terminal() or depth == 0:
