@@ -17,7 +17,7 @@ class State:
         [self.board[0][1], self.board[1][1], self.board[2][1]],
         [self.board[0][2], self.board[1][2], self.board[2][2]],
         [self.board[0][0], self.board[1][1], self.board[2][2]],
-        [self.board[0][2], self.board[1][1], self.board[2][0]] 
+        [self.board[0][2], self.board[1][1], self.board[2][0]]
         ]
 
     def evaluate_line(self, line:list):
@@ -29,19 +29,19 @@ class State:
             return 100
         elif(min_count == 3):
             return -100
-        
-        if (max_count == 2 and empty_count == 1):
-            return 10
-        if (min_count == 2 and empty_count == 1):
-            return -10
 
-        if (max_count == 1 and empty_count == 2):
-            return 1
-        if (min_count == 1 and empty_count == 2):
-            return -1
+        if (max_count == 2 and empty_count == 1):
+            return 20
+        if (min_count == 2 and empty_count == 1):
+            return -20
+
+        # if (max_count == 1 and empty_count == 2):
+        #     return 1
+        # if (min_count == 1 and empty_count == 2):
+        #     return -1
 
         return 0
-        
+
 
 
     def evaluate_func(self):
@@ -49,7 +49,7 @@ class State:
 
         for line in self.lines:
             board_evaluation += self.evaluate_line(line)
-        
+
         return board_evaluation
 
     def check_if_win(self):
@@ -68,24 +68,26 @@ class State:
             print("|".join(row))
 
 class Game:
-    def __init__(self, player_max, player_min, my_depth=10):
+    def __init__(self, player_max, player_min, x_depth, o_depth):
         self.state = State([[' ' for _ in range(3)] for _ in range(3)])
         self.players = {'X': player_max, 'O': player_min}
-        self.depth = my_depth
+        self.depth_X = x_depth
+        self.depth_O = o_depth
 
     def play(self):
-        # current_player = self.players["X"]
-        current_player = self.players["O"]
+        current_player = self.players["X"]
+        # current_player = self.players["O"]
         iters = 1
 
-        print(f"depth= {self.depth}")
+        print(f"depth_X = {self.depth_X}")
+        print(f"depth_O = {self.depth_O}")
         print(f"###_ {iters} _###")
         while not self.state.is_terminal():
             if(current_player == self.players['O']):
                 iters += 1
                 self.state.display()
                 print(f"###_ {iters} _###")
-                next_move = get_action(current_player.symbol, self.state, 1)
+                next_move = get_action(current_player.symbol, self.state, self.depth_O)
                 self.state = new_board_state(self.state, next_move, current_player.symbol)
                 current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
                 # self.state.display()
@@ -101,7 +103,7 @@ class Game:
             iters += 1
             self.state.display()
             print(f"###_ {iters} _###")
-            next_move = get_action(current_player.symbol, self.state, self.depth)
+            next_move = get_action(current_player.symbol, self.state, self.depth_X)
             self.state = new_board_state(self.state, next_move, current_player.symbol)
             current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
 
@@ -124,54 +126,46 @@ def new_board_state(state, next_move, player_symbol):
     new_board[next_move[0]][next_move[1]] = player_symbol
     return State(new_board)
 
-
 def get_action(player_symbol, state, my_depth):
-    _, best_move = minimax(state, player_symbol, my_depth)
+    best_utility = minimax(state, player_symbol, my_depth)
+    best_move = None
+    for next_move in possible_moves(state):
+        result_state = new_board_state(state, next_move, player_symbol)
+        utility = minimax(result_state, 'O' if player_symbol == 'X' else 'X', my_depth - 1)
+        if utility == best_utility:
+            best_move = next_move
+            break
     return best_move
 
-#TODO alpfa beta pruning 
-
-def minimax(state:State, player_symbol, depth):
+def minimax(state: State, player_symbol, depth):
     if state.is_terminal() or depth == 0:
-        if(possible_moves(state)):
-            move = possible_moves(state)[0]
-        else:
-            move = None
-        return state.evaluate_func(), None
-
+        return state.evaluate_func()
 
     if player_symbol == 'X':
         max_utility = float('-inf')
-        best_move = None
         for next_move in possible_moves(state):
             result_state = new_board_state(state, next_move, player_symbol)
-            utility, _ = minimax(result_state, 'O', depth -1)
-            if utility > max_utility:
-                max_utility = utility
-                best_move = next_move
-        return max_utility, best_move
+            utility = minimax(result_state, 'O', depth - 1)
+            max_utility = max(max_utility, utility)
+        return max_utility
     else:
         min_utility = float('inf')
-        best_move = None
         for next_move in possible_moves(state):
             result_state = new_board_state(state, next_move, player_symbol)
-            utility, _ = minimax(result_state, 'X', depth -1)
-            if utility < min_utility:
-                min_utility = utility
-                best_move = next_move
-        return min_utility, best_move
+            utility = minimax(result_state, 'X', depth - 1)
+            min_utility = min(min_utility, utility)
+        return min_utility
+
 
 if __name__ == "__main__":
     player_maximizing = Player('X')
     player_minimizing = Player('O')
 
-    game = Game(player_maximizing, player_minimizing,30)
+    game = Game(player_maximizing, player_minimizing,10,2)
 
     #TODO Start move center # PLANSZA POCZATKOWA DO SPRAWKA bo wtedy wieksza glebokosc sprawia ze dluzej gra trwa
-    # game.state.board[0][0] = "X"
-    # game.state.board[1][1] = "O"
-    # game.state.board[0][2] = "X"
-    # game.state.board[1][1] = "O"
-    # game.state.board[2][2] = "X"
+
+    # game.state.board[0][1] = "X"
+
 
     game.play()
