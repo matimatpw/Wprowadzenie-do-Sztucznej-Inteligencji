@@ -36,9 +36,9 @@ class State:
             return -20
 
         # if (max_count == 1 and empty_count == 2):
-        #     return 1
+        #     return 10
         # if (min_count == 1 and empty_count == 2):
-        #     return -1
+        #     return -10
 
         return 0
 
@@ -137,7 +137,7 @@ def get_action(player_symbol, state, my_depth):
             break
     return best_move
 
-def minimax(state: State, player_symbol, depth):
+def minimax(state: State, player_symbol, depth,alpha=float('-inf'),beta=float('inf')):
     if state.is_terminal() or depth == 0:
         return state.evaluate_func()
 
@@ -145,15 +145,20 @@ def minimax(state: State, player_symbol, depth):
         max_utility = float('-inf')
         for next_move in possible_moves(state):
             result_state = new_board_state(state, next_move, player_symbol)
-            utility = minimax(result_state, 'O', depth - 1)
+            utility = minimax(result_state, 'O', depth - 1,alpha,beta)
             max_utility = max(max_utility, utility)
+            alpha = max(alpha, max_utility)
+            if(alpha >= beta):
+                return max_utility
         return max_utility
     else:
         min_utility = float('inf')
         for next_move in possible_moves(state):
             result_state = new_board_state(state, next_move, player_symbol)
-            utility = minimax(result_state, 'X', depth - 1)
+            utility = minimax(result_state, 'X', depth - 1,alpha,beta)
             min_utility = min(min_utility, utility)
+            if(alpha >= beta):
+                return min_utility
         return min_utility
 
 
@@ -161,11 +166,13 @@ if __name__ == "__main__":
     player_maximizing = Player('X')
     player_minimizing = Player('O')
 
-    game = Game(player_maximizing, player_minimizing,10,2)
+    game = Game(player_maximizing, player_minimizing,10,3)
 
     #TODO Start move center # PLANSZA POCZATKOWA DO SPRAWKA bo wtedy wieksza glebokosc sprawia ze dluzej gra trwa
 
-    # game.state.board[0][1] = "X"
+    game.state.board[0][1] = "X"
+    game.state.board[1][1] = "O"
+    # game.state.board[0][0] = "O"
 
 
     game.play()
