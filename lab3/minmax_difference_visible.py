@@ -68,11 +68,15 @@ class State:
             print("|".join(row))
 
 class Game:
-    def __init__(self, player_max, player_min, x_depth, o_depth):
+    def __init__(self, player_max, player_min, x_depth, o_depth, is_user_player:bool=False):
         self.state = State([[' ' for _ in range(3)] for _ in range(3)])
         self.players = {'X': player_max, 'O': player_min}
         self.depth_X = x_depth
         self.depth_O = o_depth
+        self.is_user = is_user_player
+
+    def is_user_player(self):
+        return self.is_user
 
     def play(self):
         current_player = self.players["X"]
@@ -83,27 +87,33 @@ class Game:
         print(f"depth_O = {self.depth_O}")
         print(f"###_ {iters} _###")
         while not self.state.is_terminal():
+            iters += 1
+            self.state.display()
+            print(f"###_ {iters} _###")
+
+
             if(current_player == self.players['O']):
-                iters += 1
-                self.state.display()
-                print(f"###_ {iters} _###")
-                next_move = get_action(current_player.symbol, self.state, self.depth_O)
+                if(self.is_user_player()):
+                    next_move = None
+                next_move = get_move(current_player.symbol, self.state, self.depth_O)
                 self.state = new_board_state(self.state, next_move, current_player.symbol)
                 current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
+
                 # self.state.display()
                 # row =int(input("input row\n"))
                 # col =int(input("input col\n"))
-                # action = row,col
-                # self.state = new_board_state(self.state, action, current_player.symbol)
+                # move = row,col
+                # self.state = new_board_state(self.state, move, current_player.symbol)
                 # current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
                 # iters +=1
                 # print(f"###_ {iters} _###")
                 continue
 
-            iters += 1
-            self.state.display()
-            print(f"###_ {iters} _###")
-            next_move = get_action(current_player.symbol, self.state, self.depth_X)
+            # iters += 1
+            # self.state.display()
+            # print(f"###_ {iters} _###")
+
+            next_move = get_move(current_player.symbol, self.state, self.depth_X)
             self.state = new_board_state(self.state, next_move, current_player.symbol)
             current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
 
@@ -117,7 +127,7 @@ class Game:
         else:
             print(">Draw!")
 
-def possible_moves(state):
+def get_possible_moves(state):
     return [(i, j) for i in range(3) for j in range(3) if state.board[i][j] == ' ']
 
 def new_board_state(state, next_move, player_symbol):
@@ -126,13 +136,16 @@ def new_board_state(state, next_move, player_symbol):
     new_board[next_move[0]][next_move[1]] = player_symbol
     return State(new_board)
 
-def get_action(player_symbol, state, my_depth):
+def get_move(player_symbol, state, my_depth): ### TO NIE DZIALA XD
+    if(player_symbol is None):
+        print("PLAYER SYMBOL NONE WTF?? \n",player_symbol)
+        return 1
     best_utility = minimax(state, player_symbol, my_depth)
     best_move = None
-    for next_move in possible_moves(state):
+    for next_move in get_possible_moves(state):
         result_state = new_board_state(state, next_move, player_symbol)
-        utility = minimax(result_state, 'O' if player_symbol == 'X' else 'X', my_depth - 1)
-        if utility == best_utility:
+        new_utility = minimax(result_state, 'O' if player_symbol == 'X' else 'X', my_depth - 1)
+        if new_utility == best_utility:
             best_move = next_move
             break
     return best_move
@@ -143,20 +156,20 @@ def minimax(state: State, player_symbol, depth,alpha=float('-inf'),beta=float('i
 
     if player_symbol == 'X':
         max_utility = float('-inf')
-        for next_move in possible_moves(state):
+        for next_move in get_possible_moves(state):
             result_state = new_board_state(state, next_move, player_symbol)
-            utility = minimax(result_state, 'O', depth - 1,alpha,beta)
-            max_utility = max(max_utility, utility)
+            new_utility = minimax(result_state, 'O', depth - 1,alpha,beta)
+            max_utility = max(max_utility, new_utility)
             alpha = max(alpha, max_utility)
             if(alpha >= beta):
                 return max_utility
         return max_utility
     else:
         min_utility = float('inf')
-        for next_move in possible_moves(state):
+        for next_move in get_possible_moves(state):
             result_state = new_board_state(state, next_move, player_symbol)
-            utility = minimax(result_state, 'X', depth - 1,alpha,beta)
-            min_utility = min(min_utility, utility)
+            new_utility = minimax(result_state, 'X', depth - 1,alpha,beta)
+            min_utility = min(min_utility, new_utility)
             if(alpha >= beta):
                 return min_utility
         return min_utility
@@ -166,12 +179,12 @@ if __name__ == "__main__":
     player_maximizing = Player('X')
     player_minimizing = Player('O')
 
-    game = Game(player_maximizing, player_minimizing,10,3)
+    game = Game(player_maximizing, player_minimizing,2,1)
 
     #TODO Start move center # PLANSZA POCZATKOWA DO SPRAWKA bo wtedy wieksza glebokosc sprawia ze dluzej gra trwa
 
-    game.state.board[0][1] = "X"
-    game.state.board[1][1] = "O"
+    # game.state.board[0][1] = "X"
+    # game.state.board[1][1] = "O"
     # game.state.board[0][0] = "O"
 
 
