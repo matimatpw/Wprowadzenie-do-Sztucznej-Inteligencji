@@ -49,7 +49,6 @@ class State:
 
         for line in self.lines:
             board_evaluation += self.evaluate_line(line)
-
         return board_evaluation
 
     def check_if_win(self) -> str or None:
@@ -100,20 +99,11 @@ class Game:
 
                 self.state = new_board_state(self.state, next_move, current_player.symbol)
                 current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
-
-                # self.state.display()
-                # row =int(input("input row\n"))
-                # col =int(input("input col\n"))
-                # action = row,col
-                # self.state = new_board_state(self.state, action, current_player.symbol)
-                # current_player = self.players['O'] if current_player == self.players['X'] else self.players['X']
-                # iters +=1
-                # print(f"###_ {iters} _###")
                 continue
 
             next_move = get_move(current_player.symbol, self.state, self.depth_X)
             self.state = new_board_state(self.state, next_move, current_player.symbol)
-            current_player = self.players[switch_player(current_player.symbol)]  #self.players['O'] if current_player == self.players['X'] else self.players['X']
+            current_player = self.players[switch_player(current_player.symbol)]  
 
         self.state.display()
         print(iters)
@@ -178,17 +168,4 @@ if __name__ == "__main__":
     player_minimizing = Player('O')
 
     game = Game(player_maximizing, player_minimizing,5,2)
-
-    #TODO Start move center # PLANSZA POCZATKOWA DO SPRAWKA
-
-    # game.state.board[0][1] = "X"
-    # game.state.board[1][1] = "X"
-    # game.state.board[0][0] = "O"
-    # game.state.board[0][2] = "X"
-    # game.state.board[2][2] = "X"
-    # game.state.board[1][2] = "O"
-    # game.state.board[1][0] = "X"
-    # game.state.display()
-
-
     game.play()
