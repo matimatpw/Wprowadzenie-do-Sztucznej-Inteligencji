@@ -162,6 +162,7 @@ def minimax(state: State, player_symbol, depth,alpha=float('-inf'),beta=float('i
             max_utility = max(max_utility, new_utility)
             alpha = max(alpha, max_utility)
             if(alpha >= beta):
+                print("ALFA X")
                 return max_utility
         return max_utility
     else:
@@ -170,6 +171,8 @@ def minimax(state: State, player_symbol, depth,alpha=float('-inf'),beta=float('i
             result_state = new_board_state(state, next_move, player_symbol)
             new_utility = minimax(result_state, 'X', depth - 1,alpha,beta)
             min_utility = min(min_utility, new_utility)
+            beta = min(new_utility, beta)
+
             if(alpha >= beta):
                 return min_utility
         return min_utility
@@ -179,7 +182,7 @@ if __name__ == "__main__":
     player_maximizing = Player('X')
     player_minimizing = Player('O')
 
-    game = Game(player_maximizing, player_minimizing,2,1)
+    game = Game(player_maximizing, player_minimizing,10,10)
 
     #TODO Start move center # PLANSZA POCZATKOWA DO SPRAWKA bo wtedy wieksza glebokosc sprawia ze dluzej gra trwa
 
