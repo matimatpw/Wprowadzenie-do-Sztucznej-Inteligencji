@@ -1,5 +1,6 @@
 from ucimlrepo import fetch_ucirepo 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 # fetch dataset 
 wine_quality = fetch_ucirepo(id=186) 
 
@@ -7,48 +8,28 @@ wine_quality = fetch_ucirepo(id=186)
 X = wine_quality.data.features 
 y = wine_quality.data.targets 
 
-a,b,c,d,e,f,g,h,i,j,k,l = (0 for i in range(12))
-
-# for x in range(y.shape[0]):
-#     if pd.Series(y.iloc[x])["quality"] == 0:
-#         a +=1
-#     elif pd.Series(y.iloc[x])["quality"] == 1:
-#         b += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 2:
-#         c += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 3:
-#         d += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 4:
-#         e += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 5:
-#         f += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 6:
-#         g += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 7:
-#         h += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 8:
-#         i += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 9:
-#         j += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 10:
-#         k += 1
-#     elif pd.Series(y.iloc[x])["quality"] == 11:
-#         l += 1
+print(pd.Series(y.iloc[0])['quality'])
+# if pd.Series(y.iloc[0])['quality'] == 3:
+#     pd.Series(y.iloc[0])['quality'] = -1
+# print(pd.Series(y.iloc[0])['quality'])
 
 
+for idx in range(len(y)):
+    if pd.Series(y.iloc[idx])['quality'] >= 6:
+        pd.Series(y.iloc[idx])['quality'] = 1
+    else:    
+        pd.Series(y.iloc[idx])['quality'] = -1
 
+a,b,c,d,e,f,g,h,i,j,k = (0 for _ in range(11))
+for x in range(len(y)):
+    if pd.Series(y.iloc[x])["quality"] == -1:
+        a +=1
+    elif pd.Series(y.iloc[x])["quality"] == 1:
+        b += 1
+    
 print(a)
 print(b)
-print(c)
-print(d)
-print(e)
-print(f)
-print(g)
-print(h)
-print(i)
-print(j)
-print(k)
-print(l)
+print(a+b == X.shape[0])
 
 
 
@@ -56,6 +37,15 @@ print(l)
 
 
 
+    
+
+
+
+
+
+
+
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
   
 # metadata 
 # print(wine_quality.metadata) 
