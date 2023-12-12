@@ -12,7 +12,14 @@ y_index_transposed = y_index.T
 # Subtract the arrays
 result = y_index_transposed - alpha_y_kernel
 
-print(y_index)
-print(alpha_y_kernel.size)
-print(y_index_transposed.size)
-print(266739/649)
+# print(y_index)
+# print(alpha_y_kernel.size)
+# print(y_index_transposed.size)
+# print(266739/649)
+
+from sklearn.metrics import confusion_matrix
+tn, fp, fn, tp = confusion_matrix([-1, 1, -1, 1], [1, 1, 1, -1]).ravel()
+print(tn, fp, fn, tp)
+(0, 2, 1, 1)
+
+

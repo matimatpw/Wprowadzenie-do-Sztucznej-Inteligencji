@@ -1,27 +1,17 @@
 import numpy as np
-from sklearn import datasets
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score
-import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, confusion_matrix
 from ucimlrepo import fetch_ucirepo 
 import pandas as pd
-
-from sklearn.preprocessing import LabelEncoder
-
-
-
-import numpy as np
 
 class SVM:
     def __init__(self, C=1.0, kernel='linear', sigma=0.1, learning_rate=0.01, epochs=1000):
         if kernel == 'linear':
             self.kernel = self.linear_kernel
             self.alpha = None
-        elif kernel == 'rbf':
+        else:
             self.kernel = self.rbf_kernel
             self.sigma = sigma
-        else:
-            raise ValueError("Kernel type not supported")
         self.C = C
         self.learning_rate = learning_rate
         self.epochs = epochs
@@ -79,7 +69,7 @@ class PrepareData:
                 pd.Series(self.y.iloc[idx])['quality'] = -1
 
 
-    def train_test_split_custom(self, test_size=0.2, random_state=42):
+    def train_test_split_custom(self, test_size=0.2, random_state=18):
         np.random.seed(random_state)
 
         num_samples = self.X.shape[0]
@@ -98,22 +88,13 @@ class PrepareData:
 
 if __name__ == '__main__':
     data = PrepareData() 
-    print(data.X.shape)
-    X_train, X_test, y_train, y_test = train_test_split(np.array(data.X), np.array(data.y), test_size=0.8, random_state=18)
-    print(type(X_train))
-
-    X =np.array(X_train)
-    y= np.array(y_train.ravel())
-    print("Y TEST:",y_test.shape)
-    print(X_test.shape)
-    print(y_train.shape)
-    print(X_train.shape)
+    X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
 
 
-    linear_svm_model = SVM(C=0.01, learning_rate=1e-10, epochs=100, kernel='linear')
+    linear_svm_model = SVM(C=0.1, learning_rate=1e-10, epochs=300, kernel='rbf', sigma=0.5)
     
     y_train = y_train.ravel()
-    # y_test = y_test.ravel()
+    y_test = y_test.ravel()
     linear_svm_model.fit(X_train, y_train)
 
     predictions = linear_svm_model.predict(X_test)
@@ -121,21 +102,9 @@ if __name__ == '__main__':
     print("PREDICTION:" , predictions.shape)
 
     print("accuracy:", accuracy_score(y_test, predictions))
+    tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
+    print("confusion matrix: ", (tn, fp, fn, tp))
 
-
-
-    
-    # print('SVM X LEN =' ,len(svm.X))
-    # xd= svm.score(np.array(X_test), np.array(y_test))
-    # print("train score:", xd)
-
-    # predictions = svm.predict(np.array(X_test))
-
-    # print("predictions: ",predictions.shape)
-    # print("y_test: ",y_test.shape)
-    # print(len(y_test), len(predictions.T))
-
-    # print("accuracy:", accuracy_score(np.array(y_test), np.array(predictions)))
 
 
     
