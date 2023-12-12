@@ -1,17 +1,47 @@
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix
 from ucimlrepo import fetch_ucirepo 
 import pandas as pd
+import numpy as np
+
+class PrepareData:
+    def __init__(self) -> None:
+        self.wine_quality = fetch_ucirepo(id=186) 
+        self.X = self.wine_quality.data.features 
+        self.y = self.wine_quality.data.targets 
+        self.binarize()
+
+    def binarize(self):
+        def binarize_label(quality):
+            return 1 if quality >= 6 else -1
+
+        self.y['quality'] = self.y['quality'].apply(binarize_label)
+
+    def train_test_split_custom(self, test_size=0.2, random_state=42):
+        np.random.seed(random_state)
+
+        num_samples = self.X.shape[0]
+        indices = np.arange(num_samples)
+        np.random.shuffle(indices)
+
+        test_size = int(num_samples * test_size)
+        test_indices = indices[:test_size]
+        train_indices = indices[test_size:]
+
+        X_train, X_test = self.X.iloc[train_indices], self.X.iloc[test_indices]
+        y_train, y_test = self.y.iloc[train_indices], self.y.iloc[test_indices]
+
+        return X_train, X_test, y_train, y_test
+
 
 class SVM:
     def __init__(self, C=1.0, kernel='linear', sigma=0.1, learning_rate=0.01, epochs=1000):
         if kernel == 'linear':
             self.kernel = self.linear_kernel
             self.alpha = None
-        else:
+        elif kernel == 'rbf':
             self.kernel = self.rbf_kernel
             self.sigma = sigma
+        else:
+            raise ValueError("Kernel type not supported")
         self.C = C
         self.learning_rate = learning_rate
         self.epochs = epochs
@@ -53,58 +83,12 @@ class SVM:
     def predict(self, X):
         return np.sign(self.decision_function(X))
 
+def main():
+    data = PrepareData()
+    print(data.X)
 
-class PrepareData:
-    def __init__(self) -> None:
-        self.wine_quality = fetch_ucirepo(id=186) 
-        self.X = self.wine_quality.data.features 
-        self.y = self.wine_quality.data.targets 
-        self.binarize()
+    print(data.y)
 
-    def binarize(self):
-        for idx in range(len(self.y)):
-            if pd.Series(self.y.iloc[idx])['quality'] >= 6:
-                pd.Series(self.y.iloc[idx])['quality'] = 1
-            else:    
-                pd.Series(self.y.iloc[idx])['quality'] = -1
-
-
-    def train_test_split_custom(self, test_size=0.2, random_state=18):
-        np.random.seed(random_state)
-
-        num_samples = self.X.shape[0]
-        indices = np.arange(num_samples)
-        np.random.shuffle(indices)
-
-        test_size = int(num_samples * test_size)
-        test_indices = indices[:test_size]
-        train_indices = indices[test_size:]
-
-        X_train, X_test = self.X.iloc[train_indices], self.X.iloc[test_indices]
-        y_train, y_test = self.y.iloc[train_indices], self.y.iloc[test_indices]
-
-        return X_train, X_test, y_train, y_test
-
-
-if __name__ == '__main__':
-    data = PrepareData() 
-    X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
-
-
-    linear_svm_model = SVM(C=0.1, learning_rate=1e-10, epochs=300, kernel='rbf', sigma=0.5)
-    
-    y_train = y_train.ravel()
-    y_test = y_test.ravel()
-    linear_svm_model.fit(X_train, y_train)
-
-    predictions = linear_svm_model.predict(X_test)
-    print("Y TEST:",y_test.shape)
-    print("PREDICTION:" , predictions.shape)
-
-    print("accuracy:", accuracy_score(y_test, predictions))
-    tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
-    print("confusion matrix: ", (tn, fp, fn, tp))
-
-
+main()
 
     
