@@ -113,7 +113,7 @@ class PrepareData:
 if __name__ == '__main__':
     data = PrepareData() 
     X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
-    op =  optim_params(C=0.5, kernel='linear',lr=1, iters=100)
+    op =  optim_params(C=1.5, kernel='rbf',lr=1e-10, iters=300, sigma=0.7)
 
 
     linear_svm_model = SVM(op)
