@@ -32,7 +32,56 @@ class PrepareData:
         return X_train, X_test, y_train, y_test
 
 
+class SVM:
+    def __init__(self, C=1.0, kernel='linear', sigma=0.1, learning_rate=0.01, epochs=1000):
+        if kernel == 'linear':
+            self.kernel = self.linear_kernel
+            self.alpha = None
+        elif kernel == 'rbf':
+            self.kernel = self.rbf_kernel
+            self.sigma = sigma
+        else:
+            raise ValueError("Kernel type not supported")
+        self.C = C
+        self.learning_rate = learning_rate
+        self.epochs = epochs
+        self.b = 0
+        self.X = None
+        self.y = None
 
+    def linear_kernel(self, X1, X2):
+        return np.dot(X1, X2.T)
+
+    def rbf_kernel(self, X1, X2):
+        return np.exp(-(1 / 2 * self.sigma ** 2) * np.linalg.norm(X1[:, np.newaxis] - X2[np.newaxis, :], axis=2) ** 2)
+
+    def fit(self, X_fit, y_fit):
+        self.X = X_fit
+        self.y = y_fit
+
+        self.alpha = np.random.random(X_fit.shape[0])
+        ones_vector = np.ones(X_fit.shape[0])
+        yk_sum = np.outer(y_fit, y_fit) * self.kernel(X_fit, X_fit)
+
+        for _ in range(self.epochs):
+            gradient = ones_vector - np.sum(yk_sum * self.alpha)
+
+            self.alpha += self.learning_rate * gradient
+            self.alpha[self.alpha > self.C] = self.C
+            self.alpha[self.alpha < 0] = 0
+
+        index = self.get_index()
+        b_fit = y_fit[index] - (self.alpha * y_fit).dot(self.kernel(X_fit, X_fit[index]))
+        self.b = np.mean(b_fit)
+
+    def get_index(self):
+        return np.where((0 < self.alpha) & (self.alpha < self.C))[0]
+
+    def decision_function(self, X):
+        return (self.alpha * self.y).dot(self.kernel(self.X, X)) + self.b
+
+    def predict(self, X):
+        return np.sign(self.decision_function(X))
 
 def main():
     data = PrepareData()

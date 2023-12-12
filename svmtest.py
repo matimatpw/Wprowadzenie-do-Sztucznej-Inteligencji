@@ -72,10 +72,11 @@ class PrepareData:
         self.binarize()
 
     def binarize(self):
-        def binarize_label(quality):
-            return 1 if quality >= 6 else -1
-
-        self.y['quality'] = self.y['quality'].apply(binarize_label)
+        for idx in range(len(self.y)):
+            if pd.Series(self.y.iloc[idx])['quality'] >= 6:
+                pd.Series(self.y.iloc[idx])['quality'] = 1
+            else:    
+                pd.Series(self.y.iloc[idx])['quality'] = -1
 
 
     def train_test_split_custom(self, test_size=0.2, random_state=42):
