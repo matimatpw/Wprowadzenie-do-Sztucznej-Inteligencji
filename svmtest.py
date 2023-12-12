@@ -31,6 +31,12 @@ class PrepareData:
 
         return X_train, X_test, y_train, y_test
 
+    @classmethod
+    def wrap_targets(cls, y_to_train, y_to_test):
+        y_to_train = y_to_train.ravel()
+        y_to_test = y_to_test.ravel()
+        return y_to_train, y_to_test
+
 
 class SVM:
     def __init__(self, C=1.0, kernel='linear', sigma=0.1, learning_rate=0.01, epochs=1000):
