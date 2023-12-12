@@ -52,7 +52,7 @@ class SVM:
         self.X = X_features
         self.y = y_targets
 
-        self.alpha = np.random.uniform(0, self.C, X_features.shape[0])
+        self.alpha = np.random.random(X_features.shape[0])
         yk_sum = np.outer(y_targets, y_targets) * self.kernel(X_features, X_features)
         
         for _ in range(self.iters):
@@ -113,7 +113,7 @@ class PrepareData:
 if __name__ == '__main__':
     data = PrepareData() 
     X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
-    op =  optim_params(C=1.5, kernel='rbf',lr=1e-10, iters=300, sigma=0.7)
+    op =   optim_params(C=1.0, kernel='linear',lr=1e-10, iters=300, sigma=0.5)
 
 
     linear_svm_model = SVM(op)
@@ -124,9 +124,15 @@ if __name__ == '__main__':
     # y_test = y_test.ravel()
     linear_svm_model.fit(X_train, y_train)
 
-    predictions = linear_svm_model.predict(X_test)
-    print(predictions)
-    print("accuracy:", accuracy_score(y_test, predictions))
+    test_pred =       linear_svm_model.predict(X_test)
+    train_pred  =       linear_svm_model.predict(X_train)
+
+    test_score =  accuracy_score(y_test, test_pred)
+    train_score = accuracy_score(y_train, train_pred)
+    print("test accuracy: " , test_score)
+    print("train accuracy: ", train_score)
+    print("Train/ Test accuracy:(shuld not be very high)", (train_score/test_score))
+
     # tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
     # print("confusion matrix: ", (tn, fp, fn, tp))
 
