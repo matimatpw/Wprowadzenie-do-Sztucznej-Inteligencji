@@ -18,8 +18,7 @@ result = y_index_transposed - alpha_y_kernel
 # print(266739/649)
 
 from sklearn.metrics import confusion_matrix
-tn, fp, fn, tp = confusion_matrix([-1, 1, -1, 1], [1, 1, 1, -1]).ravel()
-print(tn, fp, fn, tp)
-(0, 2, 1, 1)
-
+# tn, fp, fn, tp = confusion_matrix([-1, 1, -1, 1], [1, 1, 1, -1]).ravel()
+# print(tn, fp, fn, tp)
+# (0, 2, 1, 1)
 

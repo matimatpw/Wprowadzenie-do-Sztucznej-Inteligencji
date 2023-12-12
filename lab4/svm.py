@@ -46,23 +46,24 @@ class SVM:
         self.alpha[self.alpha < 0] = self.params.zero
     
     def get_index(self):
-        return np.where((0 < self.alpha) & (self.alpha < self.C))[0]
+        return np.where((self.alpha) > 0 & (self.alpha < self.C))[0]
 
     def fit(self, X_features, y_targets):
         self.X = X_features
         self.y = y_targets
 
         self.alpha = np.random.random(X_features.shape[0])
+        self.alpha = np.random.uniform(0, self.C, X_features.shape[0])
         yk_sum = np.outer(y_targets, y_targets) * self.kernel(X_features, X_features)
         
         for _ in range(self.iters):
             gradient = np.ones(X_features.shape[0]) - yk_sum.dot(self.alpha)
-
             self.update_alpha(gradient)
 
             self.update_loss(yk_sum)
 
         idx = self.get_index()
+
         b_fit = y_targets[idx] - (self.alpha * y_targets).dot(self.kernel(X_features, X_features[idx]))
         self.bias = np.mean(b_fit)
 
@@ -113,7 +114,8 @@ class PrepareData:
 if __name__ == '__main__':
     data = PrepareData() 
     X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
-    op = optim_params(C=10, kernel='rbf',lr=1e-10, iters=100, sigma=0.5)
+    op =  optim_params(C=0.5, kernel='linear',lr=1e-2, iters=100)
+
 
     linear_svm_model = SVM(op)
     print(y_train.shape, y_test.shape)
@@ -121,15 +123,14 @@ if __name__ == '__main__':
     print(y_train.shape, y_test.shape)
     # y_train = y_train.ravel()
     # y_test = y_test.ravel()
-    # linear_svm_model.fit(X_train, y_train)
+    linear_svm_model.fit(X_train, y_train)
 
     predictions = linear_svm_model.predict(X_test)
-
-    # print("accuracy:", accuracy_score(y_test, predictions))
+    print(predictions)
+    print("accuracy:", accuracy_score(y_test, predictions))
     # tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
     # print("confusion matrix: ", (tn, fp, fn, tp))
 
-    import matplotlib.pyplot as plt
     # print(linear_svm_model.loses)
     # plt.plot(linear_svm_model.loses)
     # plt.show()

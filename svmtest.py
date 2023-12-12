@@ -2,6 +2,41 @@ from ucimlrepo import fetch_ucirepo
 import pandas as pd
 import numpy as np
 
+# class PrepareData:
+#     def __init__(self) -> None:
+#         self.wine_quality = fetch_ucirepo(id=186) 
+#         self.X = self.wine_quality.data.features 
+#         self.y = self.wine_quality.data.targets 
+#         self.binarize()
+
+#     def binarize(self):
+#         def binarize_label(quality):
+#             return 1 if quality >= 6 else -1
+
+#         self.y['quality'] = self.y['quality'].apply(binarize_label)
+
+#     def train_test_split_custom(self, test_size=0.2, random_state=42):
+#         np.random.seed(random_state)
+
+#         num_samples = self.X.shape[0]
+#         indices = np.arange(num_samples)
+#         np.random.shuffle(indices)
+
+#         test_size = int(num_samples * test_size)
+#         test_indices = indices[:test_size]
+#         train_indices = indices[test_size:]
+
+#         X_train, X_test = self.X.iloc[train_indices], self.X.iloc[test_indices]
+#         y_train, y_test = self.y.iloc[train_indices], self.y.iloc[test_indices]
+
+#         return X_train, X_test, y_train, y_test
+
+#     @classmethod
+#     def wrap_targets(cls, y_to_train, y_to_test):
+#         y_to_train = y_to_train.ravel()
+#         y_to_test = y_to_test.ravel()
+#         return y_to_train, y_to_test
+
 class PrepareData:
     def __init__(self) -> None:
         self.wine_quality = fetch_ucirepo(id=186) 
@@ -10,12 +45,14 @@ class PrepareData:
         self.binarize()
 
     def binarize(self):
-        def binarize_label(quality):
-            return 1 if quality >= 6 else -1
+        for idx in range(len(self.y)):
+            if pd.Series(self.y.iloc[idx])['quality'] >= 6:
+                pd.Series(self.y.iloc[idx])['quality'] = 1
+            else:    
+                pd.Series(self.y.iloc[idx])['quality'] = -1
 
-        self.y['quality'] = self.y['quality'].apply(binarize_label)
 
-    def train_test_split_custom(self, test_size=0.2, random_state=42):
+    def train_test_split_custom(self, test_size=0.2, random_state=18):
         np.random.seed(random_state)
 
         num_samples = self.X.shape[0]
@@ -31,12 +68,10 @@ class PrepareData:
 
         return X_train, X_test, y_train, y_test
 
-    @classmethod
-    def wrap_targets(cls, y_to_train, y_to_test):
+    def wrap_targets(self, y_to_train, y_to_test):
         y_to_train = y_to_train.ravel()
         y_to_test = y_to_test.ravel()
         return y_to_train, y_to_test
-
 
 class SVM:
     def __init__(self, C=1.0, kernel='linear', sigma=0.1, learning_rate=0.01, epochs=1000):
@@ -95,6 +130,19 @@ def main():
 
     print(data.y)
 
-main()
+from sklearn.model_selection import train_test_split
+
+
+if __name__ == "__main__":
+    data = PrepareData() 
+    X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
+
+    X_features = X_train
+    print(X_features.shape[0])
+    alpha = np.random.random(X_features.shape[0])
+    be = np.random.uniform(0, 0.5, X_features.shape[0])
+    print(alpha)
+    print(be)
+
 
     
