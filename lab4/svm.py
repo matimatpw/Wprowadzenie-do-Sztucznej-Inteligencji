@@ -52,7 +52,6 @@ class SVM:
         self.X = X_features
         self.y = y_targets
 
-        self.alpha = np.random.random(X_features.shape[0])
         self.alpha = np.random.uniform(0, self.C, X_features.shape[0])
         yk_sum = np.outer(y_targets, y_targets) * self.kernel(X_features, X_features)
         
@@ -114,7 +113,7 @@ class PrepareData:
 if __name__ == '__main__':
     data = PrepareData() 
     X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
-    op =  optim_params(C=0.5, kernel='linear',lr=1e-2, iters=100)
+    op =  optim_params(C=0.5, kernel='linear',lr=1, iters=100)
 
 
     linear_svm_model = SVM(op)
