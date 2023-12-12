@@ -123,7 +123,7 @@ if __name__ == '__main__':
     # y_test = y_test.ravel()
     # linear_svm_model.fit(X_train, y_train)
 
-    # predictions = linear_svm_model.predict(X_test)
+    predictions = linear_svm_model.predict(X_test)
 
     # print("accuracy:", accuracy_score(y_test, predictions))
     # tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
