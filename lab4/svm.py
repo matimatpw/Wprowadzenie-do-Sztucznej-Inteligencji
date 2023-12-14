@@ -45,12 +45,15 @@ class SVM:
         self.alpha[self.alpha > self.C] = self.C
         self.alpha[self.alpha < 0] = self.params.zero
 
-    def get_index(self):
+    def get_bias(self,y_targets, X_features):
         idx = np.where((self.alpha > 0 ) & (self.alpha < self.C))[0]
         print(idx)
         if len(idx) == 0:
             return 0
-        return idx
+        else:
+            b_fit = y_targets[idx] - (self.alpha * y_targets).dot(self.kernel(X_features, X_features[idx]))
+            print("bfit", b_fit)
+            return np.mean(b_fit)
 
     def fit(self, X_features, y_targets):
         self.X = X_features
@@ -68,15 +71,7 @@ class SVM:
 
 
 
-        idx = self.get_index()
-        if(idx == 0):
-            self.bias =0
-        else:
-            b_fit = y_targets[idx] - (self.alpha * y_targets).dot(self.kernel(X_features, X_features[idx]))
-            print("bfit", b_fit)
-            self.bias = np.mean(b_fit)
-            print("bias", self.bias)
-
+        self.bias = self.get_bias(y_targets, X_features)
 
     def predict(self, X):
         return np.sign(self.decision_function(X))
@@ -124,8 +119,8 @@ class PrepareData:
 
 if __name__ == '__main__':
     data = PrepareData()
-    X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.3, random_state=18)
-    op =   optim_params(C=1.0, kernel='rbf',lr=1e-8, iters=500, sigma=0.5)
+    X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
+    op = optim_params(C=1.0, kernel='linear',lr=1e-4, iters=500)
 
 
     linear_svm_model = SVM(op)
