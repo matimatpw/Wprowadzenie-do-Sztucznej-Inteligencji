@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix
-from ucimlrepo import fetch_ucirepo 
+from ucimlrepo import fetch_ucirepo
 import pandas as pd
 class optim_params:
     def __init__(self,C:float=1.0,kernel:str='linear',lr=0.01,iters=300, sigma=0.2) -> None:
@@ -31,7 +31,7 @@ class SVM:
         self.loses = []
 
     def linear_kernel_func(self, X1, X2):
-        return np.dot(X1, X2.T)
+        return np.dot(X1, X2.T) + 1
 
     def rbf_kernel_func(self, X1, X2):
         return np.exp(-(1 / self.sigma ** 2) * np.linalg.norm(X1[:, np.newaxis] - X2[np.newaxis, :], axis=2) ** 2)
@@ -44,9 +44,13 @@ class SVM:
         self.alpha += self.step_size * gradient
         self.alpha[self.alpha > self.C] = self.C
         self.alpha[self.alpha < 0] = self.params.zero
-    
+
     def get_index(self):
-        return np.where((self.alpha) > 0 & (self.alpha < self.C))[0]
+        idx = np.where((self.alpha > 0 ) & (self.alpha < self.C))[0]
+        print(idx)
+        if len(idx) == 0:
+            return 0
+        return idx
 
     def fit(self, X_features, y_targets):
         self.X = X_features
@@ -54,17 +58,25 @@ class SVM:
 
         self.alpha = np.random.random(X_features.shape[0])
         yk_sum = np.outer(y_targets, y_targets) * self.kernel(X_features, X_features)
-        
+
         for _ in range(self.iters):
             gradient = np.ones(X_features.shape[0]) - yk_sum.dot(self.alpha)
             self.update_alpha(gradient)
 
             self.update_loss(yk_sum)
 
-        idx = self.get_index()
 
-        b_fit = y_targets[idx] - (self.alpha * y_targets).dot(self.kernel(X_features, X_features[idx]))
-        self.bias = np.mean(b_fit)
+
+
+        idx = self.get_index()
+        if(idx == 0):
+            self.bias =0
+        else:
+            b_fit = y_targets[idx] - (self.alpha * y_targets).dot(self.kernel(X_features, X_features[idx]))
+            print("bfit", b_fit)
+            self.bias = np.mean(b_fit)
+            print("bias", self.bias)
+
 
     def predict(self, X):
         return np.sign(self.decision_function(X))
@@ -76,16 +88,16 @@ class SVM:
 
 class PrepareData:
     def __init__(self) -> None:
-        self.wine_quality = fetch_ucirepo(id=186) 
-        self.X = self.wine_quality.data.features 
-        self.y = self.wine_quality.data.targets 
+        self.wine_quality = fetch_ucirepo(id=186)
+        self.X = self.wine_quality.data.features
+        self.y = self.wine_quality.data.targets
         self.binarize()
 
     def binarize(self):
         for idx in range(len(self.y)):
             if pd.Series(self.y.iloc[idx])['quality'] >= 6:
                 pd.Series(self.y.iloc[idx])['quality'] = 1
-            else:    
+            else:
                 pd.Series(self.y.iloc[idx])['quality'] = -1
 
 
@@ -111,9 +123,9 @@ class PrepareData:
         return y_to_train, y_to_test
 
 if __name__ == '__main__':
-    data = PrepareData() 
-    X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.2, random_state=18)
-    op =   optim_params(C=1.0, kernel='linear',lr=1e-10, iters=300, sigma=0.5)
+    data = PrepareData()
+    X_train, X_test, y_train, y_test = train_test_split(np.array(data.X),np.array(data.y), test_size=0.3, random_state=18)
+    op =   optim_params(C=1.0, kernel='rbf',lr=1e-8, iters=500, sigma=0.5)
 
 
     linear_svm_model = SVM(op)
