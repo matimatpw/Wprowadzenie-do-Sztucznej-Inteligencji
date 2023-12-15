@@ -1,24 +1,6 @@
-import numpy as np
+kernel_type = enumerate(['linear', 'rbf'])
 
-# Assuming y[index] has shape (411, 1)
-y_index = np.random.rand(411, 1)
 
-# Assuming (self.alpha * y).dot(self.kernel(X, X[index])) has shape (649, 411)
-alpha_y_kernel = np.random.rand(649, 411)
+print(kernel_type[0])
 
-# Transpose y[index] to make its shape (1, 411)
-y_index_transposed = y_index.T
-
-# Subtract the arrays
-result = y_index_transposed - alpha_y_kernel
-
-# print(y_index)
-# print(alpha_y_kernel.size)
-# print(y_index_transposed.size)
-# print(266739/649)
-
-from sklearn.metrics import confusion_matrix
-# tn, fp, fn, tp = confusion_matrix([-1, 1, -1, 1], [1, 1, 1, -1]).ravel()
-# print(tn, fp, fn, tp)
-# (0, 2, 1, 1)
 
