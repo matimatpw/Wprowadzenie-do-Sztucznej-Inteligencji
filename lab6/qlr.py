@@ -22,19 +22,7 @@ def q_learning(env, learning_rate=0.1, importance_future=0.9, exploration_prob=0
     q_table = np.zeros((state_space_size, action_space_size))
     
 
-    counter = 0
-    counter_arr = []
-    counter_arr_rewards = []
-    counter_rewards = 0
-
     for episode in range(num_episodes):
-
-
-        if episode % 100 == 0:
-            counter += 1
-            counter_arr.append(counter)
-            counter_arr_rewards.append(counter_rewards / 100)
-            counter_rewards = 0
 
         state = env.reset()[0]
         done = False
@@ -52,15 +40,13 @@ def q_learning(env, learning_rate=0.1, importance_future=0.9, exploration_prob=0
 
             next_state, reward, done, _, _ = env.step(action)
 
-            # Q-value update
             q_table[state, action] = (1 - learning_rate) * q_table[state, action] + learning_rate * (reward + importance_future * np.max(q_table[next_state, :]))
             state = next_state
 
             episode_reward += reward 
-            counter_rewards += episode_reward
 
 
-    return q_table, counter_arr, counter_arr_rewards
+    return q_table
 
 def evaluate_policy(q_table, env, num_episodes=100, epsilon=0.1, temperature=1.0, exploration_strategy='epsilon-greedy', max_steps=50):
     total_rewards = 0
@@ -96,7 +82,6 @@ def evaluate_policy(q_table, env, num_episodes=100, epsilon=0.1, temperature=1.0
             state, reward, done, _, _ = env.step(action)
             episode_reward += reward 
 
-        print("Episode:", episode + 1, "Episode Reward:", episode_reward, "Steps:", steps)
         total_rewards += episode_reward
         counter_rewards += episode_reward
 
@@ -111,10 +96,10 @@ def evaluate_policy(q_table, env, num_episodes=100, epsilon=0.1, temperature=1.0
 env = gym.make('Taxi-v3')
 
 importance_future = 0.9
-num_episodes = 2000
+num_episodes = 4000
 
 evaluate_episodes = 1000
-steps_limit = 30
+steps_limit = 50
 
 
 epsilon_value = 0.1
@@ -128,20 +113,13 @@ def main():
     for learning_rate in learning_rates:
         for temperature in temperatures:
 
-            q_table_epsilon, c_x_eps_learn, c_y_eps_learn = q_learning(env, learning_rate=learning_rate, exploration_prob=epsilon_value, num_episodes=num_episodes, exploration_strategy='epsilon-greedy')
+            q_table_epsilon = q_learning(env, learning_rate=learning_rate, exploration_prob=epsilon_value, num_episodes=num_episodes, exploration_strategy='epsilon-greedy')
             avg_reward_epsilon, episode_rewards_greedy, episode_steps_greedy, c_x_eps, c_y_eps = evaluate_policy(q_table_epsilon, env, epsilon=epsilon_value, num_episodes=evaluate_episodes, exploration_strategy='epsilon-greedy', max_steps=steps_limit)
             print(f'Epsilon-Greedy - Learning Rate: {learning_rate}, Average Reward: {avg_reward_epsilon}') 
 
-            q_table_boltzmann, c_x_bolt_learn, c_y_bolt_learn = q_learning(env, learning_rate=learning_rate, importance_future=importance_future, temperature=temperature, num_episodes=num_episodes, exploration_strategy='boltzmann')
+            q_table_boltzmann = q_learning(env, learning_rate=learning_rate, importance_future=importance_future, temperature=temperature, num_episodes=num_episodes, exploration_strategy='boltzmann')
             avg_reward_boltzmann, episode_rewards_boltz, episode_steps_bolts, c_x_bolt, c_y_bolt = evaluate_policy(q_table_boltzmann, env, temperature=temperature, num_episodes=evaluate_episodes, exploration_strategy='boltzmann', max_steps=steps_limit)
             print(f'Boltzmann - Temperature: {temperature}, Average Reward: {avg_reward_boltzmann}')
-        
-            episodes_arr = np.array(range(1, evaluate_episodes + 1))
-
-            # plt.plot(episodes_arr, episode_rewards_greedy, label=f'Epsilon-Greedy' , color = 'blue')
-            # plt.plot(episodes_arr, episode_steps_greedy, label=f'Greedy steps', color = 'red',linestyle='-', alpha=0.8)
-            # plt.plot(episodes_arr, episode_rewards_boltz, label=f'Boltzman', color = 'green')
-            # plt.plot(episodes_arr, episode_steps_bolts, label=f'Boltzman steps', color = 'orange', linestyle='-', alpha=0.8)
 
             plt.plot(c_x_eps, c_y_eps, label=f'Epsilon-Greedy avg', color = 'red',linestyle='-', alpha=0.8)
             plt.plot(c_x_bolt, c_y_bolt, label=f'Boltzman avg', color = 'orange',linestyle='-', alpha=0.8)
@@ -150,7 +128,7 @@ def main():
             plt.xlabel('Episode Number')
             plt.ylabel('Episode Reward')
             plt.legend()
-            plt.savefig(f'Rewards After lr_ {learning_rate} & T_ {temperature}.pdf')
+            plt.savefig(f'Olr - lr_ {learning_rate} & T_ {temperature}.pdf')
             plt.close()
 
             print("PLOT DONE")
