@@ -148,7 +148,7 @@ def main():
             plt.xlabel('Episode Number')
             plt.ylabel('Episode Reward')
             plt.legend()
-            plt.savefig(f'XXXOlr - lr_ {learning_rate} & T_ {temperature}.pdf')
+            plt.savefig(f'Qlr - lr_ {learning_rate} & T_ {temperature}.pdf')
             plt.close()
 
             print("PLOT DONE")
