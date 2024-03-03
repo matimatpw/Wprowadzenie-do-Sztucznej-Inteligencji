@@ -1,0 +1,1 @@
+### Repozytorium zawiera rozwiazania *prawie* wszystkich zadań laboratoryjnych na przedmiocie WSI (Wprowadzenie do sztucznej inteligencji) / rok 2023Z
